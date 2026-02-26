@@ -31,3 +31,7 @@ def login_view(request):
 @login_required(login_url='/index')
 def index(request):
     return render(request,'index.html')
+
+def logout(request):
+    auth.logout(request)
+    return redirect('login')
