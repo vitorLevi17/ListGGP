@@ -1,3 +1,9 @@
+#VARIAVEIS DE AMBIENTE
+#DEBUG = TRUE
+#403 ERRO DO CORS
+#IPS
+#VENV / DOCKER
+
 #!/usr/bin/env python
 """Django's command-line utility for administrative tasks."""
 import os
