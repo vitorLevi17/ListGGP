@@ -3,9 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello World</title>
+    <title>Página Inicial - ListGGP</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        .bg-custom-teal { background-color: #00a2b9; }
+        .btn-custom { background-color: #00a2b9; color: #000; border: none; font-weight: 500; transition: all 0.3s ease; }
+        .btn-custom:hover { background-color: #00879a; color: #000; transform: translateY(-2px); }
+    </style>
 </head>
 <body>
-    <h1>Hello World</h1>
+
+    {% include 'partials/navbar.html' %}
+
+    <div class="container d-flex justify-content-center align-items-center" style="min-height: calc(100vh - 90px);">
+        <div class="d-flex flex-wrap gap-4 justify-content-center">
+            {% csrf_token %}
+            <a href="#" class="btn btn-custom rounded-pill px-4 py-3 fs-5 d-flex align-items-center gap-2 shadow-sm">
+                <i class="bi bi-plus-circle"></i> Cadastrar evento
+            </a>
+            
+            <a href="#" class="btn btn-custom rounded-pill px-4 py-3 fs-5 d-flex align-items-center gap-2 shadow-sm">
+                <i class="bi bi-calendar-event"></i> Conferir eventos
+            </a>
+            
+            <!-- <a href="#" class="btn btn-custom rounded-pill px-4 py-3 fs-5 d-flex align-items-center gap-2 shadow-sm">
+                <i class="bi bi-house-door"></i> Setores
+            </a>-->
+            
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
