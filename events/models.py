@@ -9,5 +9,6 @@ class Aula(models.Model):
     descricao = models.CharField(max_length=200)
     palestrante = models.CharField(max_length=100)
     carga_horaria = models.IntegerField(null=False)
+
     
 
