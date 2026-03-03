@@ -1,8 +1,7 @@
-from django.urls import path,include
-from .views import listar_treinamentos_marcados
+from django.urls import path
+from .views import listar_treinamentos_marcados,conferir_treinamento
 
 urlpatterns = [
     path('listar-eventos-marcados/',listar_treinamentos_marcados,name='listar-eventos-marcados'),
-    #path('cadastrar-evento/',nome-da-view(name='events-cadastrar-evento'))   
-
+    path('conferir-treinamento/<int:treinamento_id>/',conferir_treinamento,name='conferir-treinamento'),
 ]
