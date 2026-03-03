@@ -19,6 +19,7 @@ class Treinamento(models.Model):
         ("FINALIZADO","finalizado"),
         ("CANCELADO","cancelado"),
         ("MARCADO","marcado"),
+        ("ANDAMENTO","andamento")
     ]
 
     nm_evento = models.CharField(max_length=100)
