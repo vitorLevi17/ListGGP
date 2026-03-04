@@ -13,6 +13,7 @@ def conferir_treinamento(request,treinamento_id):
     treinamento = Treinamento.objects.get(id=treinamento_id)
     return render(request,'events/conferir-treinamento.html',{'treinamento':treinamento})
 
+@login_required(login_url='/login')
 def iniciar_treinamento(request,treinamento_id):
     treinamento = Treinamento.objects.get(id=treinamento_id)
     treinamento.status = "ANDAMENTO"
@@ -30,5 +31,11 @@ def adicionar_participante(request,treinamento_id,matricula_participante):
     treinamento.participantes.append(matricula_participante)
     treinamento.save()
     return redirect('conferir-treinamento',treinamento_id=treinamento.id)
-    
 
+@login_required(login_url='/login')
+def finalizar_treinamento(request,treinamento_id):
+    treinamento = Treinamento.objects.get(id=treinamento_id)
+    treinamento.status = "FINALIZADO"
+    treinamento.save()
+    messages.success(request,'Evento finalizado com sucesso!')
+    return redirect('conferir-treinamento',treinamento_id=treinamento.id) 

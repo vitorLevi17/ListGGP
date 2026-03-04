@@ -12,7 +12,6 @@
         .bg-custom-teal { background-color: #00a2b9; }
         .text-custom-teal { color: #00a2b9; }
         
-        /* Estilo para centralizar o leitor de QR Code */
         #reader {
             width: 100%;
             max-width: 500px;
@@ -33,6 +32,7 @@
                 </div>
             {% endfor %}
         {% endif %}
+        
         <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
             <h2 class="m-0"><i class="bi bi-info-square text-custom-teal me-2"></i>Detalhes do Treinamento</h2>
             <a href="{% url 'listar-eventos-marcados' %}" class="btn btn-outline-secondary btn-sm">
@@ -59,9 +59,9 @@
                     <div class="col-md-5 d-flex flex-column justify-content-center gap-3 border-start px-4">
                         
                         {% if treinamento.status == 'MARCADO' %}
-                            <a href="{% url 'iniciar-treinamento' treinamento.id %}" class="btn btn-success btn-lg fw-bold shadow-sm py-3">
+                            <button type="button" class="btn btn-success btn-lg fw-bold shadow-sm py-3 w-100" data-bs-toggle="modal" data-bs-target="#iniciarModal">
                                 <i class="bi bi-play-fill fs-4 me-2"></i> INICIAR EVENTO
-                            </a>
+                            </button>
                         
                         {% elif treinamento.status == 'ANDAMENTO' %}
                             <button type="button" class="btn btn-outline-success border-3 fw-bold shadow-sm py-4 d-flex flex-column align-items-center w-100" data-bs-toggle="modal" data-bs-target="#qrModal">
@@ -69,9 +69,9 @@
                                 REGISTRAR PARTICIPANTE
                             </button>
                             
-                            <a href="#" class="btn btn-danger btn-lg fw-bold shadow-sm py-3">
+                            <button type="button" class="btn btn-danger btn-lg fw-bold shadow-sm py-3 w-100" data-bs-toggle="modal" data-bs-target="#finalizarModal">
                                 <i class="bi bi-stop-fill fs-4 me-2"></i> FINALIZAR EVENTO
-                            </a>
+                            </button>
                         {% else %}
                             <div class="alert alert-secondary text-center m-0">
                                 Nenhuma ação disponível (Evento {{ treinamento.get_status_display }}).
@@ -123,8 +123,44 @@
         </div>
     </div>
 
+    <div class="modal fade" id="iniciarModal" tabindex="-1" aria-labelledby="iniciarModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title fw-bold" id="iniciarModalLabel"><i class="bi bi-play-circle me-2"></i>Iniciar Treinamento</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center p-4 fs-5">
+                    Tem certeza que deseja <strong>iniciar</strong> este evento agora?
+                </div>
+                <div class="modal-footer justify-content-center border-0 pb-4">
+                    <button type="button" class="btn btn-outline-secondary px-4 fw-bold" data-bs-dismiss="modal">NÃO</button>
+                    <a href="{% url 'iniciar-treinamento' treinamento.id %}" class="btn btn-success px-4 fw-bold">SIM</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="finalizarModal" tabindex="-1" aria-labelledby="finalizarModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title fw-bold" id="finalizarModalLabel"><i class="bi bi-stop-circle me-2"></i>Finalizar Treinamento</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center p-4 fs-5">
+                    Tem certeza que deseja <strong>finalizar</strong> este evento?<br>
+                    <span class="text-muted small fs-6">Não será mais possível registrar novos participantes após a finalização.</span>
+                </div>
+                <div class="modal-footer justify-content-center border-0 pb-4">
+                    <button type="button" class="btn btn-outline-secondary px-4 fw-bold" data-bs-dismiss="modal">NÃO</button>
+                    <a href="{% url 'finalizar-treinamento' treinamento.id %}" class="btn btn-danger px-4 fw-bold">SIM</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
     <script>
@@ -132,34 +168,26 @@
             const qrModal = document.getElementById('qrModal');
             let html5QrCode;
 
-            // Quando o modal terminar de abrir na tela...
             qrModal.addEventListener('shown.bs.modal', function () {
                 html5QrCode = new Html5Qrcode("reader");
                 
-                // 1. Pede permissão e busca as câmeras do dispositivo
                 Html5Qrcode.getCameras().then(cameras => {
                     if (cameras && cameras.length > 0) {
-                        
-                        // Tenta pegar a última câmera (geralmente a traseira no celular)
-                        // Se for notebook, vai pegar a webcam normal
                         let cameraId = cameras[cameras.length - 1].id; 
                         
                         html5QrCode.start(
                             cameraId, 
                             { fps: 10, qrbox: { width: 250, height: 250 } },
                             (decodedText) => {
-                                // QR Code LIDO COM SUCESSO!
                                 html5QrCode.stop().then(() => {
                                     bootstrap.Modal.getInstance(qrModal).hide();
-                                    alert("QR Code Lido com sucesso: " + decodedText +" Registrando...");
+                                    
                                     let urlDjango = "{% url 'adicionar-participante' treinamento.id 'MATRICULA' %}";
                                     urlDjango = urlDjango.replace('MATRICULA', encodeURIComponent(decodedText));
                                     window.location.href = urlDjango;
                                 });
                             },
                             (errorMessage) => { 
-                                // O leitor dispara erros a cada frame que não acha um QR code.
-                                // Nós ignoramos isso para não travar o console.
                             }
                         ).catch((err) => {
                             alert("Erro ao iniciar o vídeo da câmera: " + err);
@@ -172,7 +200,6 @@
                 });
             });
 
-            // Quando o usuário fechar o modal no botão "Cancelar"...
             qrModal.addEventListener('hidden.bs.modal', function () {
                 if (html5QrCode) {
                     html5QrCode.stop().then(() => {

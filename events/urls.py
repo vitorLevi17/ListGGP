@@ -1,9 +1,11 @@
 from django.urls import path
-from .views import listar_treinamentos_marcados,conferir_treinamento,iniciar_treinamento,adicionar_participante
+from .views import listar_treinamentos_marcados,conferir_treinamento,iniciar_treinamento,adicionar_participante,finalizar_treinamento
 
 urlpatterns = [
     path('listar-eventos-marcados/',listar_treinamentos_marcados,name='listar-eventos-marcados'),
     path('conferir-treinamento/<int:treinamento_id>/',conferir_treinamento,name='conferir-treinamento'),
     path('iniciar-treinamento/<int:treinamento_id>/',iniciar_treinamento,name='iniciar-treinamento'),
-    path('adicionar-participante/<int:treinamento_id>/<str:matricula_participante>/',adicionar_participante,name='adicionar-participante')
+    path('adicionar-participante/<int:treinamento_id>/<str:matricula_participante>/',adicionar_participante,name='adicionar-participante'),
+    path('finalizar-treinamento/<int:treinamento_id>/',finalizar_treinamento,name='finalizar-treinamento')#,
+    #path('conferir-treinamento-finalizado/<int:treinamento_id>/',conferir_treinamento,name='conferir-treinamento-finalizado')
 ]
