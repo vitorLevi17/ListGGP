@@ -25,6 +25,14 @@
     {% include 'partials/navbar.html' %}
 
     <div class="container mt-5">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+                    <i class="bi bi-info-circle-fill me-2"></i> {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
         <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
             <h2 class="m-0"><i class="bi bi-info-square text-custom-teal me-2"></i>Detalhes do Treinamento</h2>
             <a href="{% url 'listar-eventos-marcados' %}" class="btn btn-outline-secondary btn-sm">
@@ -143,7 +151,10 @@
                                 // QR Code LIDO COM SUCESSO!
                                 html5QrCode.stop().then(() => {
                                     bootstrap.Modal.getInstance(qrModal).hide();
-                                    alert("QR Code Lido com sucesso: " + decodedText);
+                                    alert("QR Code Lido com sucesso: " + decodedText +" Registrando...");
+                                    let urlDjango = "{% url 'adicionar-participante' treinamento.id 'MATRICULA' %}";
+                                    urlDjango = urlDjango.replace('MATRICULA', encodeURIComponent(decodedText));
+                                    window.location.href = urlDjango;
                                 });
                             },
                             (errorMessage) => { 
