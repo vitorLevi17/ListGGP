@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import listar_treinamentos_marcados,conferir_treinamento
+from .views import listar_treinamentos_marcados,conferir_treinamento,iniciar_treinamento
 
 urlpatterns = [
     path('listar-eventos-marcados/',listar_treinamentos_marcados,name='listar-eventos-marcados'),
     path('conferir-treinamento/<int:treinamento_id>/',conferir_treinamento,name='conferir-treinamento'),
+    path('iniciar-treinamento/<int:treinamento_id>/',iniciar_treinamento,name='iniciar-treinamento')
 ]
