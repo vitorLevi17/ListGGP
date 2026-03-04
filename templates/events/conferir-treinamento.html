@@ -11,6 +11,13 @@
     <style>
         .bg-custom-teal { background-color: #00a2b9; }
         .text-custom-teal { color: #00a2b9; }
+        
+        /* Estilo para centralizar o leitor de QR Code */
+        #reader {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
     </style>
 </head>
 <body class="bg-light">
@@ -49,10 +56,10 @@
                             </a>
                         
                         {% elif treinamento.status == 'ANDAMENTO' %}
-                            <a href="#" class="btn btn-outline-success border-3 fw-bold shadow-sm py-4 d-flex flex-column align-items-center">
+                            <button type="button" class="btn btn-outline-success border-3 fw-bold shadow-sm py-4 d-flex flex-column align-items-center w-100" data-bs-toggle="modal" data-bs-target="#qrModal">
                                 <i class="bi bi-qr-code-scan mb-2" style="font-size: 3rem;"></i> 
                                 REGISTRAR PARTICIPANTE
-                            </a>
+                            </button>
                             
                             <a href="#" class="btn btn-danger btn-lg fw-bold shadow-sm py-3">
                                 <i class="bi bi-stop-fill fs-4 me-2"></i> FINALIZAR EVENTO
@@ -90,7 +97,79 @@
         </div>
     </div>
 
+    <div class="modal fade" id="qrModal" tabindex="-1" aria-labelledby="qrModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-custom-teal text-dark">
+                    <h5 class="modal-title fw-bold" id="qrModalLabel"><i class="bi bi-camera-video me-2"></i>Escaneie o Crachá/Código</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div id="reader"></div>
+                    <p class="text-muted small mt-3 mb-0">Aponte a câmera para o QR Code do participante.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const qrModal = document.getElementById('qrModal');
+            let html5QrCode;
+
+            // Quando o modal terminar de abrir na tela...
+            qrModal.addEventListener('shown.bs.modal', function () {
+                html5QrCode = new Html5Qrcode("reader");
+                
+                // 1. Pede permissão e busca as câmeras do dispositivo
+                Html5Qrcode.getCameras().then(cameras => {
+                    if (cameras && cameras.length > 0) {
+                        
+                        // Tenta pegar a última câmera (geralmente a traseira no celular)
+                        // Se for notebook, vai pegar a webcam normal
+                        let cameraId = cameras[cameras.length - 1].id; 
+                        
+                        html5QrCode.start(
+                            cameraId, 
+                            { fps: 10, qrbox: { width: 250, height: 250 } },
+                            (decodedText) => {
+                                // QR Code LIDO COM SUCESSO!
+                                html5QrCode.stop().then(() => {
+                                    bootstrap.Modal.getInstance(qrModal).hide();
+                                    alert("QR Code Lido com sucesso: " + decodedText);
+                                });
+                            },
+                            (errorMessage) => { 
+                                // O leitor dispara erros a cada frame que não acha um QR code.
+                                // Nós ignoramos isso para não travar o console.
+                            }
+                        ).catch((err) => {
+                            alert("Erro ao iniciar o vídeo da câmera: " + err);
+                        });
+                    } else {
+                        alert("Nenhuma câmera foi detectada no seu dispositivo.");
+                    }
+                }).catch(err => {
+                    alert("Acesso à câmera negado! Verifique as permissões do navegador ou a regra do HTTPS. Detalhe técnico: " + err);
+                });
+            });
+
+            // Quando o usuário fechar o modal no botão "Cancelar"...
+            qrModal.addEventListener('hidden.bs.modal', function () {
+                if (html5QrCode) {
+                    html5QrCode.stop().then(() => {
+                        html5QrCode.clear();
+                    }).catch(err => console.error("Erro ao limpar câmera", err));
+                }
+            });
+        });
+    </script>
 </body>
 </html>
