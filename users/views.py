@@ -7,8 +7,9 @@ from django.contrib.auth.decorators import login_required
 
 def login_view(request):
     #CORREÇÃO DO 403 VERIFICAÇÃO CSRF
-    #if request.user.is_authenticated:
-        #return redirect('index')
+    if request.user.is_authenticated:
+        return redirect('index')
+    
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
