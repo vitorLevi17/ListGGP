@@ -73,9 +73,13 @@
                                 <i class="bi bi-stop-fill fs-4 me-2"></i> FINALIZAR EVENTO
                             </button>
                         {% else %}
-                            <div class="alert alert-secondary text-center m-0">
-                                Nenhuma ação disponível (Evento {{ treinamento.get_status_display }}).
+                            <div class="alert alert-secondary text-center mb-2">
+                                <i class="bi bi-info-circle me-1"></i> Evento <strong>{{ treinamento.get_status_display|upper }}</strong>.
                             </div>
+                            
+                            <a href="{% url 'exportar-lista-treinamento' treinamento.id %}" class="btn btn-primary btn-lg fw-bold shadow-sm py-3 w-100">
+                                <i class="bi bi-file-earmark-arrow-down-fill fs-4 me-2"></i> GERAR RELATÓRIO
+                            </a>
                         {% endif %}
 
                     </div>

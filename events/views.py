@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from .models import Treinamento
@@ -39,3 +40,24 @@ def finalizar_treinamento(request,treinamento_id):
     treinamento.save()
     messages.success(request,'Evento finalizado com sucesso!')
     return redirect('conferir-treinamento',treinamento_id=treinamento.id) 
+
+@login_required(login_url='/login') #FALTANDO NOME COLABORADOR - DATA E HORARIO DE INICIO
+def gerar_relatorio(request,treinamento_id):
+    treinamento = Treinamento.objects.get(id=treinamento_id)
+
+    data_formatada = treinamento.data.strftime('%d-%m-%Y')
+    nome_arquivo = "Lista de presença - "+treinamento.nm_evento+" - "+ data_formatada
+    arquivo = HttpResponse(content_type='text/plain')
+    arquivo['Content-Disposition'] = f'attachment; filename="{nome_arquivo}"'
+
+    arquivo.write("EVENTO: "+treinamento.nm_evento+" - "+data_formatada+" \n \n")
+    horas = 0
+    for aula in treinamento.aulas.all():
+        arquivo.write("Aula: "+aula.nm_aula+" | Descrição: "+aula.descricao+" | Ministrado por: "+aula.palestrante+" | Duração de: "+str(aula.carga_horaria)+" horas \n")
+        horas += aula.carga_horaria
+
+    arquivo.write("\nCarga horária total do treinamento: "+str(horas)+" horas\n")
+    arquivo.write("PARTICIPANTES:  \n")
+    for matricula in treinamento.participantes:
+        arquivo.write(" '"+matricula+"',")
+    return arquivo
