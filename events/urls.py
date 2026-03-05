@@ -6,6 +6,5 @@ urlpatterns = [
     path('conferir-treinamento/<int:treinamento_id>/',conferir_treinamento,name='conferir-treinamento'),
     path('iniciar-treinamento/<int:treinamento_id>/',iniciar_treinamento,name='iniciar-treinamento'),
     path('adicionar-participante/<int:treinamento_id>/<str:matricula_participante>/',adicionar_participante,name='adicionar-participante'),
-    path('finalizar-treinamento/<int:treinamento_id>/',finalizar_treinamento,name='finalizar-treinamento')#,
-    #path('conferir-treinamento-finalizado/<int:treinamento_id>/',conferir_treinamento,name='conferir-treinamento-finalizado')
+    path('finalizar-treinamento/<int:treinamento_id>/',finalizar_treinamento,name='finalizar-treinamento')
 ]
