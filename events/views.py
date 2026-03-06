@@ -3,6 +3,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from .models import Treinamento
 from django.contrib import messages
+from .forms import CriarEventoForm,CriarAulaForm
 
 @login_required(login_url='/login')
 def listar_treinamentos_marcados(request):
@@ -61,3 +62,36 @@ def gerar_relatorio(request,treinamento_id):
     for matricula in treinamento.participantes:
         arquivo.write(" '"+matricula+"',")
     return arquivo
+
+@login_required(login_url="login/") #ALERTA PARA AULAS VAZIAS
+def criar_evento(request):
+    if request.method == 'POST':
+        form = CriarEventoForm(request.POST)
+
+        if form.is_valid():
+            treinamento = form.save(commit=False)
+            treinamento.status = 'MARCADO'
+            treinamento.save()
+
+            form.save_m2m()
+            messages.success(request, 'Novo evento cadastrado com sucesso!')
+            return redirect('listar-eventos-marcados')
+    else:
+        form = CriarEventoForm()
+    
+    return render(request,'events/criar-evento.html',{'form':form})
+
+@login_required(login_url="login/") #DEVOLVER PARA CRIAR_EVENTO COM OS DADOS SALVOS
+def criar_aula(request):
+    if request.method == 'POST':
+        form = CriarAulaForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Nova aula cadastrada com sucesso! Ela já está disponível para seleção.')
+            
+            return redirect('criar-evento') 
+    else:
+        form = CriarAulaForm()
+    
+    return render(request, 'events/criar-aula.html', {'form': form})

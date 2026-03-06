@@ -53,7 +53,13 @@
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label fw-bold"><i class="bi bi-book me-2 text-secondary"></i>Aulas Vinculadas</label>
+                                <div class="d-flex justify-content-between align-items-end mb-2">
+                                    <label class="form-label fw-bold m-0"><i class="bi bi-book me-2 text-secondary"></i>Aulas Vinculadas</label>
+                                    
+                                    <a href="{% url 'criar-aula' %}" class="btn btn-sm btn-outline-primary rounded-pill fw-bold">
+                                        <i class="bi bi-plus-circle"></i> Criar Nova Aula
+                                    </a>
+                                </div>
                                 
                                 <div class="bg-light border rounded p-3">
                                     {% for checkbox in form.aulas %}
@@ -63,11 +69,14 @@
                                                 {{ checkbox.choice_label }}
                                             </label>
                                         </div>
+                                    {% empty %}
+                                        <div class="text-danger small fst-italic">
+                                            Nenhuma aula cadastrada ainda. Clique no botão acima para cadastrar a primeira!
+                                        </div>
                                     {% endfor %}
                                 </div>
                                 <small class="text-muted">Selecione as aulas que farão parte deste treinamento.</small>
                             </div>
-                            
                             <hr class="my-4">
                             
                             <div class="d-flex justify-content-end gap-2">

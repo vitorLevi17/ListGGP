@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Aula - ListGGP</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .bg-custom-teal { background-color: #00a2b9; }
+        .text-custom-teal { color: #00a2b9; }
+    </style>
+</head>
+<body class="bg-light">
+
+    {% include 'partials/navbar.html' %}
+
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
+            <h2 class="m-0"><i class="bi bi-journal-plus text-custom-teal me-2"></i>Nova Aula</h2>
+            <a href="javascript:history.back()" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left"></i> Voltar
+            </a>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-custom-teal text-dark fw-bold fs-5">
+                        Detalhes do Módulo/Aula
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="POST">
+                            {% csrf_token %} 
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Nome da Aula</label>
+                                {{ form.nm_aula }}
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Descrição</label>
+                                {{ form.descricao }}
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-8 mb-3">
+                                    <label class="form-label fw-bold">Palestrante</label>
+                                    {{ form.palestrante }}
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label fw-bold">Duração (h)</label>
+                                    {{ form.carga_horaria }}
+                                </div>
+                            </div>
+                            
+                            <hr class="my-4">
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-success btn-lg fw-bold shadow-sm">
+                                    <i class="bi bi-check-circle me-2"></i>Salvar Aula
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
