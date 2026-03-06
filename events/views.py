@@ -60,7 +60,7 @@ def gerar_relatorio(request,treinamento_id):
     arquivo.write("\nCarga horária total do treinamento: "+str(horas)+" horas\n")
     arquivo.write("PARTICIPANTES:  \n")
     for matricula in treinamento.participantes:
-        arquivo.write(" '"+matricula+"',")
+        arquivo.write(" '00"+matricula+"',")
     return arquivo
 
 @login_required(login_url="login/") #ALERTA PARA AULAS VAZIAS
