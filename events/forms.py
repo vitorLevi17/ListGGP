@@ -9,7 +9,7 @@ class CriarEventoForm(forms.ModelForm):
         
         widgets = {
             'nm_evento': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Treinamento de Integração'}),
-            'data': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'data': forms.DateTimeInput(format='%Y-%m-%dT%H:%M',attrs={'type': 'datetime-local', 'class': 'form-control'}),
             'local': forms.Select(attrs={'class': 'form-select'}),
             'aulas': forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input'}),
         }

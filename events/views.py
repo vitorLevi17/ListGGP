@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Treinamento
 from django.contrib import messages
 from .forms import CriarEventoForm,CriarAulaForm
+from django.utils import timezone
 
 @login_required(login_url='/login')
 def listar_treinamentos_marcados(request):
@@ -46,7 +47,8 @@ def finalizar_treinamento(request,treinamento_id):
 def gerar_relatorio(request,treinamento_id):
     treinamento = Treinamento.objects.get(id=treinamento_id)
 
-    data_formatada = treinamento.data.strftime('%d-%m-%Y')
+    data_local = timezone.localtime(treinamento.data)
+    data_formatada = data_local.strftime('%d-%m-%Y %H:%M')
     nome_arquivo = "Lista de presença - "+treinamento.nm_evento+" - "+ data_formatada
     arquivo = HttpResponse(content_type='text/plain')
     arquivo['Content-Disposition'] = f'attachment; filename="{nome_arquivo}"'
@@ -84,7 +86,7 @@ def criar_evento(request):
     
     return render(request,'events/criar-evento.html',{'form':form})
 
-@login_required(login_url="login/") #DEVOLVER PARA CRIAR_EVENTO COM OS DADOS SALVOS
+@login_required(login_url="login/")
 def criar_aula(request):
     if request.method == 'POST':
         form = CriarAulaForm(request.POST)

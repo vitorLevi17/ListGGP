@@ -23,7 +23,7 @@ class Treinamento(models.Model):
     ]
 
     nm_evento = models.CharField(max_length=100)
-    data = models.DateField()
+    data = models.DateTimeField()
     local = models.CharField(max_length=50,choices=opcoes_local)
     status = models.CharField(max_length=50,choices=opcoes_status)
     participantes = models.JSONField(default=list,blank=True)
