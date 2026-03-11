@@ -43,7 +43,7 @@ def finalizar_treinamento(request,treinamento_id):
     messages.success(request,'Evento finalizado com sucesso!')
     return redirect('conferir-treinamento',treinamento_id=treinamento.id) 
 
-@login_required(login_url='/login') #FALTANDO NOME COLABORADOR - DATA E HORARIO DE INICIO
+@login_required(login_url='/login')
 def gerar_relatorio(request,treinamento_id):
     treinamento = Treinamento.objects.get(id=treinamento_id)
 
