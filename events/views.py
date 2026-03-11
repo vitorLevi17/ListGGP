@@ -62,7 +62,7 @@ def gerar_relatorio(request,treinamento_id):
     arquivo.write("\nCarga horária total do treinamento: "+str(horas)+" horas\n")
     arquivo.write("PARTICIPANTES:  \n")
     
-    matriculas_formatadas = [f"'00{matricula}'" for matricula in treinamento.participantes]
+    matriculas_formatadas = [f"'{str(matricula).zfill(7)}'" for matricula in treinamento.participantes]
     lista_participantes = ", ".join(matriculas_formatadas)
 
     arquivo.write(lista_participantes)
