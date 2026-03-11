@@ -80,7 +80,7 @@ def criar_evento(request):
 
             form.save_m2m()
             messages.success(request, 'Novo evento cadastrado com sucesso!')
-            return redirect('listar-eventos-marcados')
+            return redirect('conferir-treinamento',treinamento_id=treinamento.id )
     else:
         form = CriarEventoForm()
     
