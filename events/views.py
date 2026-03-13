@@ -49,17 +49,20 @@ def gerar_relatorio(request,treinamento_id):
 
     data_local = timezone.localtime(treinamento.data)
     data_formatada = data_local.strftime('%d-%m-%Y %H:%M')
-    nome_arquivo = "Lista de presença - "+treinamento.nm_evento+" - "+ data_formatada
+    nome_arquivo = "Lista de presença - "+treinamento.nm_evento+" - "+ data_formatada + ".txt"
     arquivo = HttpResponse(content_type='text/plain')
     arquivo['Content-Disposition'] = f'attachment; filename="{nome_arquivo}"'
 
     arquivo.write("EVENTO: "+treinamento.nm_evento+" - "+data_formatada+" \n \n")
-    horas = 0
+    minutos_totais = 0
     for aula in treinamento.aulas.all():
-        arquivo.write("Aula: "+aula.nm_aula+" | Descrição: "+aula.descricao+" | Ministrado por: "+aula.palestrante+" | Duração de: "+str(aula.carga_horaria)+" horas \n")
-        horas += aula.carga_horaria
-
-    arquivo.write("\nCarga horária total do treinamento: "+str(horas)+" horas\n")
+        hora_formatada = aula.carga_horaria.strftime('%H:%M')
+        arquivo.write(f"Aula: "+aula.nm_aula+" | Descrição: "+aula.descricao+" | Ministrado por: "+aula.palestrante+" | Duração de: "+str(hora_formatada)+" horas \n")
+        minutos_totais += (aula.carga_horaria.hour * 60) + aula.carga_horaria.minute
+    
+    horas_finais = minutos_totais // 60
+    minutos_finais = minutos_totais % 60
+    arquivo.write(f"\nCarga horária total do treinamento: {horas_finais:02d}:{minutos_finais:02d} horas\n")
     arquivo.write("PARTICIPANTES:  \n")
     
     matriculas_formatadas = [f"'{str(matricula).zfill(7)}'" for matricula in treinamento.participantes]

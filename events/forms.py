@@ -23,5 +23,5 @@ class CriarAulaForm(forms.ModelForm):
             'nm_aula': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Segurança do Trabalho'}),
             'descricao': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Breve descrição do conteúdo'}),
             'palestrante': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nome do instrutor'}),
-            'carga_horaria': forms.NumberInput(attrs={'class': 'form-control', 'min': '1'}),
+            'carga_horaria': forms.TimeInput(format='%H:%M',attrs={'type':'time','class': 'form-control','min':'00:05'}),
         }

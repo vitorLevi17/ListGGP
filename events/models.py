@@ -4,7 +4,7 @@ class Aula(models.Model):
     nm_aula = models.CharField(max_length=150)
     descricao = models.CharField(max_length=200)
     palestrante = models.CharField(max_length=100)
-    carga_horaria = models.IntegerField(null=False)
+    carga_horaria = models.TimeField(null=False)
     
     def __str__(self):
         return self.nm_aula
