@@ -68,6 +68,10 @@
                                 <i class="bi bi-qr-code-scan mb-2" style="font-size: 3rem;"></i> 
                                 REGISTRAR PARTICIPANTE
                             </button>
+
+                            <button type="button" class="btn btn-warning btn-lg fw-bold shadow-sm py-3 w-100" data-bs-toggle="modal" data-bs-target="#manualModal">
+                                <i class="bi bi-keyboard me-2"></i> DIGITAR MARTICULA
+                            </button>
                             
                             <button type="button" class="btn btn-danger btn-lg fw-bold shadow-sm py-3 w-100" data-bs-toggle="modal" data-bs-target="#finalizarModal">
                                 <i class="bi bi-stop-fill fs-4 me-2"></i> FINALIZAR EVENTO
@@ -212,6 +216,46 @@
                 }
             });
         });
+        // FUNÇÃO PARA ADICIONAR PARTICIPANTE MANUALMENTE
+        function adicionarManual() {
+            // Pega o valor digitado e remove espaços
+            const matricula = document.getElementById('matriculaInput').value.trim();
+            
+            // Verifica se o campo não está vazio E se o número é maior que zero
+            if (matricula && Number(matricula) > 0) {
+                
+                // Prepara a URL
+                let urlDjango = "{% url 'adicionar-participante' treinamento.id 'MATRICULA' %}";
+                urlDjango = urlDjango.replace('MATRICULA', encodeURIComponent(matricula));
+                
+                // Redireciona para salvar
+                window.location.href = urlDjango;
+            } else {
+                // Mensagem de erro mais específica
+                alert("Por favor, digite uma matrícula válida (apenas números positivos).");
+                
+                // Limpa o campo para a pessoa digitar de novo
+                document.getElementById('matriculaInput').value = "";
+            }
+        }
     </script>
+    <div class="modal fade" id="manualModal" tabindex="-1" aria-labelledby="manualModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title fw-bold" id="manualModalLabel"><i class="bi bi-keyboard me-2"></i>Inserir Matrícula Manualmente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4 fs-5 text-start">
+                    <label for="matriculaInput" class="form-label fw-bold">Digite a matrícula:</label>
+                    <input type="number" id="matriculaInput" class="form-control form-control-lg shadow-sm" placeholder="Ex: 890" min="1">
+                </div>
+                <div class="modal-footer justify-content-end border-0 pb-4">
+                    <button type="button" class="btn btn-outline-secondary px-4 fw-bold" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-warning px-4 fw-bold shadow-sm" onclick="adicionarManual()">Adicionar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
