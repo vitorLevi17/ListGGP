@@ -71,7 +71,7 @@ def gerar_relatorio(request,treinamento_id):
     arquivo.write(lista_participantes)
     return arquivo
 
-@login_required(login_url="login/") #ALERTA PARA AULAS VAZIAS
+@login_required(login_url="login/")
 def criar_evento(request):
     if request.method == 'POST':
         form = CriarEventoForm(request.POST)
@@ -84,6 +84,11 @@ def criar_evento(request):
             form.save_m2m()
             messages.success(request, 'Novo evento cadastrado com sucesso!')
             return redirect('conferir-treinamento',treinamento_id=treinamento.id )
+        else:
+            if 'aulas' in form.errors:
+                messages.error(request, 'Atenção: Você precisa selecionar pelo menos uma Aula Vinculada para criar o treinamento!')
+            else:
+                messages.error(request, 'Atenção: Insira uma data e horário para inicio do treinamento.')
     else:
         form = CriarEventoForm()
     
