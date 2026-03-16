@@ -14,6 +14,10 @@ class CriarEventoForm(forms.ModelForm):
             'aulas': forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input'}),
             'horario_final': forms.TimeInput(format='%H:%M',attrs={'type':'time','class': 'form-control','min':'00:05'}),
         }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['data'].required = True
+        self.fields['horario_final'].required = True    
 
 class CriarAulaForm(forms.ModelForm):
     class Meta:

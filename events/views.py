@@ -88,7 +88,7 @@ def criar_evento(request):
             if 'aulas' in form.errors:
                 messages.error(request, 'Atenção: Você precisa selecionar pelo menos uma Aula Vinculada para criar o treinamento!')
             else:
-                messages.error(request, 'Atenção: Insira uma data e horário para inicio do treinamento.')
+                messages.error(request, 'Atenção: Insira uma data e horário para inicio e fim do treinamento.')
     else:
         form = CriarEventoForm()
     
