@@ -53,7 +53,7 @@ def gerar_relatorio(request,treinamento_id):
     arquivo = HttpResponse(content_type='text/plain')
     arquivo['Content-Disposition'] = f'attachment; filename="{nome_arquivo}"'
 
-    arquivo.write("EVENTO: "+treinamento.nm_evento+" - "+data_formatada+" \n \n")
+    arquivo.write("EVENTO: "+treinamento.nm_evento+" - "+data_formatada+" até "+treinamento.horario_final.strftime('%H:%M')+ "\n \n")
     minutos_totais = 0
     for aula in treinamento.aulas.all():
         hora_formatada = aula.carga_horaria.strftime('%H:%M')

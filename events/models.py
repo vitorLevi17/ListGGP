@@ -28,6 +28,7 @@ class Treinamento(models.Model):
     status = models.CharField(max_length=50,choices=opcoes_status)
     participantes = models.JSONField(default=list,blank=True)
     aulas = models.ManyToManyField(Aula, related_name='aulas')
+    horario_final = models.TimeField(null=True,blank=True)
 
     def __str__(self):
         return self.nm_evento

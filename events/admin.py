@@ -10,7 +10,8 @@ class ListTreinamento(admin.ModelAdmin):
     list_display = ("nm_evento",
                     "data",
                     "local",
-                    "status"
+                    "status",
+                    "horario_final"
                     )
     filter_horizontal = ('aulas',)
 

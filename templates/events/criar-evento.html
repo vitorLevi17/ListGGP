@@ -53,21 +53,31 @@
                             </div>
 
                             <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold"><i class="bi bi-calendar-time me-2 text-secondary"></i>Data e Hora</label>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label fw-bold"><i class="bi bi-calendar-time me-2 text-secondary"></i>Data e Início</label>
                                     <div class="input-group shadow-sm">
                                         <span class="input-group-text bg-custom-teal text-white border-custom-teal">
-                                            <i class="bi bi-clock-history"></i>
+                                            <i class="bi bi-calendar-check"></i>
                                         </span>
                                         {{ form.data }}
                                     </div>
                                 </div>
-                                <div class="col-md-6 mb-3">
+                                
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label fw-bold"><i class="bi bi-clock-history me-2 text-secondary"></i>Término</label>
+                                    <div class="input-group shadow-sm">
+                                        <span class="input-group-text bg-custom-teal text-white border-custom-teal">
+                                            <i class="bi bi-clock"></i>
+                                        </span>
+                                        {{ form.horario_final }}
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4 mb-3">
                                     <label class="form-label fw-bold"><i class="bi bi-geo-alt me-2 text-secondary"></i>Local</label>
                                     {{ form.local }}
                                 </div>
                             </div>
-
                             <div class="mb-4">
                                 <div class="d-flex justify-content-between align-items-end mb-2">
                                     <label class="form-label fw-bold m-0"><i class="bi bi-book me-2 text-secondary"></i>Aulas Vinculadas</label>
@@ -116,8 +126,8 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
 
-            // 1. Damos um "nome" (calendario) para o Flatpickr e ativamos a gravação automática ao mudar a data (onChange)
-            const calendario = flatpickr("#id_data", {
+            // 1. Flatpickr cuida da DATA e HORA de Início
+            const calendarioInicio = flatpickr("#id_data", {
                 enableTime: true,           
                 time_24hr: true,            
                 dateFormat: "Y-m-d\\TH:i",  
@@ -125,27 +135,37 @@
                 altInput: true,             
                 altFormat: "d/m/Y \\à\\s H:i", 
                 disableMobile: "true",
-                // AVISA O SCRIPT PARA SALVAR O RASCUNHO NA HORA QUE O USUÁRIO CLICA NO DIA/HORA
-                onChange: function() {
-                    salvarRascunho(); 
-                }
+                onChange: function() { salvarRascunho(); }
+            });
+
+            // 2. NOVO: Flatpickr cuida APENAS da HORA de Término
+            const calendarioFim = flatpickr("#id_horario_final", {
+                enableTime: true,
+                noCalendar: true,       // A MÁGICA AQUI: Esconde os dias, mostra só o relógio!
+                dateFormat: "H:i",      // Formato puro de hora que o Django exige
+                time_24hr: true,
+                altInput: true,
+                altFormat: "H:i",
+                disableMobile: "true",
+                onChange: function() { salvarRascunho(); }
             });
             
             const formEvento = document.getElementById('form-criar-evento');
             const btnCancelar = document.getElementById('btn-cancelar');
 
-            // 2. Tenta recuperar o "rascunho" salvo na memória
             const rascunho = JSON.parse(localStorage.getItem('rascunho_evento') || '{}');
             
             if (rascunho.nm_evento) document.getElementById('id_nm_evento').value = rascunho.nm_evento;
             if (rascunho.local) document.getElementById('id_local').value = rascunho.local;
-
-            // 3. A MÁGICA DA DATA: Pedimos pro Flatpickr preencher o calendário visual!
+            
+            // 3. Restaura as datas usando a função setDate() dos calendários
             if (rascunho.data) {
-                calendario.setDate(rascunho.data);
+                calendarioInicio.setDate(rascunho.data);
+            }
+            if (rascunho.horario_final) {
+                calendarioFim.setDate(rascunho.horario_final);
             }
 
-            // Restaura os checkboxes das aulas
             if (rascunho.aulas) {
                 rascunho.aulas.forEach(val => {
                     const cb = document.querySelector(`input[name="aulas"][value="${val}"]`);
@@ -153,27 +173,24 @@
                 });
             }
 
-            // Função que captura tudo e salva
             function salvarRascunho() {
                 const dados = {
                     nm_evento: document.getElementById('id_nm_evento').value,
                     data: document.getElementById('id_data').value,
+                    horario_final: document.getElementById('id_horario_final').value, // Salva o horário
                     local: document.getElementById('id_local').value,
                     aulas: Array.from(document.querySelectorAll('input[name="aulas"]:checked')).map(cb => cb.value)
                 };
                 localStorage.setItem('rascunho_evento', JSON.stringify(dados));
             }
 
-            // Ouve qualquer tecla digitada ou mudança de campo
             formEvento.addEventListener('input', salvarRascunho);
             formEvento.addEventListener('change', salvarRascunho);
 
-            // Limpa a memória quando o formulário for salvo de verdade
             formEvento.addEventListener('submit', function() {
                 localStorage.removeItem('rascunho_evento');
             });
 
-            // Limpa a memória ao cancelar
             if(btnCancelar) {
                 btnCancelar.addEventListener('click', function() {
                     localStorage.removeItem('rascunho_evento');
