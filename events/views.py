@@ -113,3 +113,13 @@ def criar_aula(request):
 def treinamentos_finalizados(request):
     lista_treinamentos = Treinamento.objects.filter(status__in=['FINALIZADO', 'CANCELADO'])
     return render(request,'events/listar-treinamento.html',{'treinamentos':lista_treinamentos})
+
+def cancelar_treinamento(request,treinamento_id):
+    treinamento = Treinamento.objects.get(id = treinamento_id)
+    treinamento.status = "CANCELADO"
+    treinamento.save()
+    return redirect('conferir-treinamento',treinamento_id=treinamento.id)
+
+#@login_required(login_url="login/")
+#def alterar_data_finalizacao(request,treinamento_id):
+    #treinamento = Treinamento.objects.get(id = treinamento_id) 

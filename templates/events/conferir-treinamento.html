@@ -63,6 +63,14 @@
                             <button type="button" class="btn btn-success btn-lg fw-bold shadow-sm py-3 w-100" data-bs-toggle="modal" data-bs-target="#iniciarModal">
                                 <i class="bi bi-play-fill fs-4 me-2"></i> INICIAR EVENTO
                             </button>
+
+                            <button type="button" class="btn btn-success btn-lg fw-bold shadow-sm py-3 w-100" data-bs-toggle="modal" data-bs-target="#iniciarModal">
+                                <i class="bi bi-play-fill fs-4 me-2"></i> EDITAR EVENTO
+                            </button>
+
+                            <button type="button" class="btn btn-danger btn-lg fw-bold shadow-sm py-3 w-100" data-bs-toggle="modal" data-bs-target="#cancelarModal">
+                                <i class="bi bi-x-circle-fill fs-4 me-2"></i> CANCELAR EVENTO
+                            </button>
                         
                         {% elif treinamento.status == 'ANDAMENTO' %}
                             <button type="button" class="btn btn-outline-success border-3 fw-bold shadow-sm py-4 d-flex flex-column align-items-center w-100" data-bs-toggle="modal" data-bs-target="#qrModal">
@@ -145,6 +153,25 @@
                 <div class="modal-footer justify-content-center border-0 pb-4">
                     <button type="button" class="btn btn-outline-secondary px-4 fw-bold" data-bs-dismiss="modal">NÃO</button>
                     <a href="{% url 'iniciar-treinamento' treinamento.id %}" class="btn btn-success px-4 fw-bold">SIM</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="cancelarModal" tabindex="-1" aria-labelledby="cancelarModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title fw-bold" id="cancelarModalLabel"><i class="bi bi-x-octagon-fill me-2"></i>Cancelar Treinamento</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center p-4 fs-5">
+                    Tem certeza que deseja <strong>cancelar</strong> este evento?<br>
+                    <span class="text-muted small fs-6">O evento será marcado como cancelado e não ocorrerá mais.</span>
+                </div>
+                <div class="modal-footer justify-content-center border-0 pb-4">
+                    <button type="button" class="btn btn-outline-secondary px-4 fw-bold" data-bs-dismiss="modal">VOLTAR</button>
+                    <a href="{% url 'cancelar-treinamento' treinamento.id %}" class="btn btn-danger px-4 fw-bold">SIM, CANCELAR</a>
                 </div>
             </div>
         </div>

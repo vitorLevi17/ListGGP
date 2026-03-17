@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import listar_treinamentos_marcados,conferir_treinamento,iniciar_treinamento,adicionar_participante,finalizar_treinamento,gerar_relatorio,criar_evento,criar_aula,treinamentos_finalizados
+from .views import *
 
 urlpatterns = [
     path('listar-eventos-marcados/',listar_treinamentos_marcados,name='listar-eventos-marcados'),
@@ -11,4 +11,5 @@ urlpatterns = [
     path('criar-evento/',criar_evento,name='criar-evento'),
     path('criar-aula/', criar_aula, name='criar-aula'),
     path('treinamentos-finalizados/',treinamentos_finalizados,name='treinamentos-finalizados'),
+    path('cancelar-treinamento/<int:treinamento_id>/',cancelar_treinamento,name='cancelar-treinamento')
 ]
