@@ -108,3 +108,8 @@ def criar_aula(request):
         form = CriarAulaForm()
     
     return render(request, 'events/criar-aula.html', {'form': form})
+
+@login_required(login_url="login/")
+def treinamentos_finalizados(request):
+    lista_treinamentos = Treinamento.objects.filter(status__in=['FINALIZADO', 'CANCELADO'])
+    return render(request,'events/listar-treinamento.html',{'treinamentos':lista_treinamentos})
