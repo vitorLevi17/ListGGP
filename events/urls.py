@@ -11,5 +11,6 @@ urlpatterns = [
     path('criar-evento/',criar_evento,name='criar-evento'),
     path('criar-aula/', criar_aula, name='criar-aula'),
     path('treinamentos-finalizados/',treinamentos_finalizados,name='treinamentos-finalizados'),
-    path('cancelar-treinamento/<int:treinamento_id>/',cancelar_treinamento,name='cancelar-treinamento')
+    path('cancelar-treinamento/<int:treinamento_id>/',cancelar_treinamento,name='cancelar-treinamento'),
+    path('alterar-data-finalizacao/<int:treinamento_id>/',alterar_data_finalizacao,name='alterar-data-finalizacao')
 ]

@@ -120,6 +120,13 @@ def cancelar_treinamento(request,treinamento_id):
     treinamento.save()
     return redirect('conferir-treinamento',treinamento_id=treinamento.id)
 
-#@login_required(login_url="login/")
-#def alterar_data_finalizacao(request,treinamento_id):
-    #treinamento = Treinamento.objects.get(id = treinamento_id) 
+@login_required(login_url="login/")
+def alterar_data_finalizacao(request,treinamento_id):
+    if request.method == 'POST':
+        treinamento = Treinamento.objects.get(id = treinamento_id) 
+        novo_horario_final = request.POST.get('novo_horario')
+
+        if novo_horario_final:
+            treinamento.horario_final = novo_horario_final
+            treinamento.save()
+    return redirect('conferir-treinamento',treinamento_id=treinamento.id)

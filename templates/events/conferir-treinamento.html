@@ -89,6 +89,10 @@
                             <div class="alert alert-secondary text-center mb-2">
                                 <i class="bi bi-info-circle me-1"></i> Evento <strong>{{ treinamento.get_status_display|upper }}</strong>.
                             </div>
+
+                            <button type="button" class="btn btn-warning btn-lg fw-bold shadow-sm py-3 w-100" data-bs-toggle="modal" data-bs-target="#alterarHorarioModal">
+                                <i class="bi bi-clock-history me-2"></i> ALTERAR TÉRMINO
+                            </button>
                             
                             <a href="{% url 'exportar-lista-treinamento' treinamento.id %}" class="btn btn-primary btn-lg fw-bold shadow-sm py-3 w-100">
                                 <i class="bi bi-file-earmark-arrow-down-fill fs-4 me-2"></i> GERAR RELATÓRIO
@@ -192,6 +196,30 @@
                     <button type="button" class="btn btn-outline-secondary px-4 fw-bold" data-bs-dismiss="modal">NÃO</button>
                     <a href="{% url 'finalizar-treinamento' treinamento.id %}" class="btn btn-danger px-4 fw-bold">SIM</a>
                 </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="alterarHorarioModal" tabindex="-1" aria-labelledby="alterarHorarioModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <form method="POST" action="{% url 'alterar-data-finalizacao' treinamento.id %}">
+                    {% csrf_token %}
+                    <div class="modal-header bg-warning text-dark">
+                        <h5 class="modal-title fw-bold" id="alterarHorarioModalLabel"><i class="bi bi-clock me-2"></i>Alterar Horário de Término</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-4 fs-5 text-start">
+                        <p class="text-muted small mb-3">Defina o horário real de encerramento do evento. Se apagar a hora, o campo ficará vazio no sistema.</p>
+                        
+                        <label for="novo_horario" class="form-label fw-bold">Novo horário:</label>
+                        <input type="time" name="novo_horario" id="novo_horario" class="form-control form-control-lg shadow-sm" value="{{ treinamento.horario_final|time:'H:i' }}">
+                    </div>
+                    <div class="modal-footer justify-content-end border-0 pb-4">
+                        <button type="button" class="btn btn-outline-secondary px-4 fw-bold" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-warning px-4 fw-bold shadow-sm">Salvar Alteração</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
