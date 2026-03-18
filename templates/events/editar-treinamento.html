@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Treinamento - ListGGP</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/airbnb.css">
+    <style>
+        .bg-custom-teal { background-color: #00a2b9; }
+        .text-custom-teal { color: #00a2b9; }
+    </style>
+</head>
+<body class="bg-light">
+
+    {% include 'partials/navbar.html' %}
+
+    <div class="container mt-5">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+                    <i class="bi bi-info-circle-fill me-2"></i> {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
+            <h2 class="m-0"><i class="bi bi-pencil-square text-custom-teal me-2"></i>Editar Treinamento</h2>
+            <a href="{% url 'conferir-treinamento' treinamento.id %}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left"></i> Voltar para Detalhes
+            </a>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-custom-teal text-dark fw-bold fs-5">
+                        <i class="bi bi-pencil me-2"></i>Alterar dados do evento
+                    </div>
+                    
+                    <div class="card-body p-4 fs-5">
+                        <form method="POST" novalidate>
+                            {% csrf_token %} 
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-bold"><i class="bi bi-fonts me-2 text-secondary"></i>Nome do Evento</label>
+                                {{ form.nm_evento }}
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label fw-bold"><i class="bi bi-calendar-time me-2 text-secondary"></i>Data e Início</label>
+                                    <div class="input-group shadow-sm">
+                                        <span class="input-group-text bg-custom-teal text-white border-custom-teal">
+                                            <i class="bi bi-calendar-check"></i>
+                                        </span>
+                                        {{ form.data }}
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label fw-bold"><i class="bi bi-clock-history me-2 text-secondary"></i>Término</label>
+                                    <div class="input-group shadow-sm">
+                                        <span class="input-group-text bg-custom-teal text-white border-custom-teal">
+                                            <i class="bi bi-clock"></i>
+                                        </span>
+                                        {{ form.horario_final }}
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label fw-bold"><i class="bi bi-geo-alt me-2 text-secondary"></i>Local</label>
+                                    {{ form.local }}
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between align-items-end mb-2">
+                                    <label class="form-label fw-bold m-0"><i class="bi bi-book me-2 text-secondary"></i>Aulas Vinculadas</label>
+                                </div>
+                                
+                                <div class="bg-light border rounded p-3">
+                                    {% for checkbox in form.aulas %}
+                                        <div class="form-check mb-2">
+                                            {{ checkbox.tag }}
+                                            <label class="form-check-label ms-1" for="{{ checkbox.id_for_label }}">
+                                                {{ checkbox.choice_label }}
+                                            </label>
+                                        </div>
+                                    {% empty %}
+                                        <div class="text-danger small fst-italic">Nenhuma aula cadastrada no sistema.</div>
+                                    {% endfor %}
+                                </div>
+                                <small class="text-muted">Marque ou desmarque as aulas deste treinamento.</small>
+                            </div>
+                            
+                            <hr class="my-4">
+                            
+                            <div class="d-flex justify-content-end gap-2">
+                                <a href="{% url 'conferir-treinamento' treinamento.id %}" class="btn btn-secondary btn-lg fw-bold px-4">Cancelar</a>
+                                <button type="submit" class="btn btn-success btn-lg fw-bold px-4 shadow-sm">
+                                    <i class="bi bi-check-circle me-2"></i>Salvar Alterações
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/pt.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Inicializa os calendários pegando os valores que o Django já colocou nos inputs
+            const calendarioInicio = flatpickr("#id_data", {
+                enableTime: true,           
+                time_24hr: true,            
+                dateFormat: "Y-m-d\\TH:i",  
+                locale: "pt",               
+                altInput: true,             
+                altFormat: "d/m/Y \\à\\s H:i", 
+                disableMobile: "true"
+            });
+
+            const calendarioFim = flatpickr("#id_horario_final", {
+                enableTime: true,
+                noCalendar: true,       
+                dateFormat: "H:i",      
+                time_24hr: true,
+                altInput: true,
+                altFormat: "H:i",
+                disableMobile: "true"
+            });
+
+            // Força o preenchimento visual caso o HTML demore a renderizar
+            const valorData = document.getElementById('id_data').value;
+            const valorHora = document.getElementById('id_horario_final').value;
+            
+            if(valorData) calendarioInicio.setDate(valorData);
+            if(valorHora) calendarioFim.setDate(valorHora, false, "H:i");
+        });
+    </script>
+</body>
+</html>

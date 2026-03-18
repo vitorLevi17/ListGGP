@@ -64,9 +64,9 @@
                                 <i class="bi bi-play-fill fs-4 me-2"></i> INICIAR EVENTO
                             </button>
 
-                            <button type="button" class="btn btn-success btn-lg fw-bold shadow-sm py-3 w-100" data-bs-toggle="modal" data-bs-target="#iniciarModal">
-                                <i class="bi bi-play-fill fs-4 me-2"></i> EDITAR EVENTO
-                            </button>
+                            <a href="{% url 'editar-treinamento' treinamento.id %}" class="btn btn-primary btn-lg fw-bold shadow-sm py-3 w-100">
+                                <i class="bi bi-pencil-square fs-4 me-2"></i> EDITAR EVENTO
+                            </a>
 
                             <button type="button" class="btn btn-danger btn-lg fw-bold shadow-sm py-3 w-100" data-bs-toggle="modal" data-bs-target="#cancelarModal">
                                 <i class="bi bi-x-circle-fill fs-4 me-2"></i> CANCELAR EVENTO

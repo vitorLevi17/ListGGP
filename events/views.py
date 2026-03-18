@@ -130,3 +130,23 @@ def alterar_data_finalizacao(request,treinamento_id):
             treinamento.horario_final = novo_horario_final
             treinamento.save()
     return redirect('conferir-treinamento',treinamento_id=treinamento.id)
+
+def editar_treinamento(request,treinamento_id):
+    treinamento = Treinamento.objects.get(id=treinamento_id)
+
+    if request.method == 'POST':
+        form = CriarEventoForm(request.POST, instance=treinamento)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Treinamento atualizado com sucesso!')
+            return redirect('conferir-treinamento', treinamento_id=treinamento.id)
+        else:
+            if 'horario_final' in form.errors:
+                messages.error(request, 'Atenção: O Horário de Término é obrigatório!')
+            else:
+                messages.error(request, 'Atenção: Verifique os campos preenchidos.')
+    else:
+        form = CriarEventoForm(instance=treinamento)
+    
+    return render(request, 'events/editar-treinamento.html', {'form': form, 'treinamento': treinamento})
