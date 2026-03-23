@@ -13,5 +13,6 @@ urlpatterns = [
     path('treinamentos-finalizados/',treinamentos_finalizados,name='treinamentos-finalizados'),
     path('cancelar-treinamento/<int:treinamento_id>/',cancelar_treinamento,name='cancelar-treinamento'),
     path('alterar-data-finalizacao/<int:treinamento_id>/',alterar_data_finalizacao,name='alterar-data-finalizacao'),
-    path('editar-treinamento/<int:treinamento_id>/',editar_treinamento,name='editar-treinamento')
+    path('editar-treinamento/<int:treinamento_id>/',editar_treinamento,name='editar-treinamento'),
+    path('remover-participante/<int:treinamento_id>/<str:matricula_participante>/',remover_participante,name='remover-participante'),
 ]

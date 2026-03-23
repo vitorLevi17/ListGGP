@@ -33,6 +33,7 @@ def adicionar_participante(request,treinamento_id,matricula_participante):
 
     treinamento.participantes.append(matricula_participante)
     treinamento.save()
+    messages.success(request,f'Usuário {matricula_participante} adicionado ao evento com sucesso!')
     return redirect('conferir-treinamento',treinamento_id=treinamento.id)
 
 @login_required(login_url='/login')
@@ -150,3 +151,14 @@ def editar_treinamento(request,treinamento_id):
         form = CriarEventoForm(instance=treinamento)
     
     return render(request, 'events/editar-treinamento.html', {'form': form, 'treinamento': treinamento})
+
+def remover_participante(request,treinamento_id,matricula_participante):
+    treinamento = Treinamento.objects.get(id=treinamento_id)
+    if matricula_participante in treinamento.participantes:
+        treinamento.participantes.remove(matricula_participante)
+        treinamento.save()
+        messages.success(request,f'Usuário {matricula_participante} removido do evento com sucesso!')
+    else:
+        messages.warning(request, f'Atenção: A matrícula {matricula_participante} não foi registrada neste evento!')
+         
+    return redirect('conferir-treinamento',treinamento_id=treinamento.id)
