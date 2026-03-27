@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Aula(models.Model):
     nm_aula = models.CharField(max_length=150)
@@ -29,6 +30,8 @@ class Treinamento(models.Model):
     participantes = models.JSONField(default=list,blank=True)
     aulas = models.ManyToManyField(Aula, related_name='aulas')
     horario_final = models.TimeField(null=True,blank=True)
+    usuario_cadastrante = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True)
+
 
     def __str__(self):
         return self.nm_evento

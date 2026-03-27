@@ -80,6 +80,7 @@ def criar_evento(request):
         if form.is_valid():
             treinamento = form.save(commit=False)
             treinamento.status = 'MARCADO'
+            treinamento.usuario_cadastrante = request.user
             treinamento.save()
 
             form.save_m2m()
@@ -115,8 +116,14 @@ def treinamentos_finalizados(request):
     lista_treinamentos = Treinamento.objects.filter(status__in=['FINALIZADO', 'CANCELADO'])
     return render(request,'events/listar-treinamento.html',{'treinamentos':lista_treinamentos})
 
+@login_required(login_url="login/")
 def cancelar_treinamento(request,treinamento_id):
     treinamento = Treinamento.objects.get(id = treinamento_id)
+
+    validar_permissoes = validar_permissoes_usuario(request,treinamento,f'{request.user.first_name}, você não tem permissão para cancelar o evento')
+    if validar_permissoes:
+        return validar_permissoes
+    
     treinamento.status = "CANCELADO"
     treinamento.save()
     return redirect('conferir-treinamento',treinamento_id=treinamento.id)
@@ -124,7 +131,12 @@ def cancelar_treinamento(request,treinamento_id):
 @login_required(login_url="login/")
 def alterar_data_finalizacao(request,treinamento_id):
     if request.method == 'POST':
-        treinamento = Treinamento.objects.get(id = treinamento_id) 
+        treinamento = Treinamento.objects.get(id = treinamento_id)
+
+        validar_permissoes = validar_permissoes_usuario(request,treinamento,f'{request.user.first_name}, você não tem permissão para alterar o horário de término do evento')
+        if validar_permissoes:
+            return validar_permissoes 
+        
         novo_horario_final = request.POST.get('novo_horario')
 
         if novo_horario_final:
@@ -132,9 +144,14 @@ def alterar_data_finalizacao(request,treinamento_id):
             treinamento.save()
     return redirect('conferir-treinamento',treinamento_id=treinamento.id)
 
+@login_required(login_url="login/")
 def editar_treinamento(request,treinamento_id):
     treinamento = Treinamento.objects.get(id=treinamento_id)
 
+    validar_permissoes = validar_permissoes_usuario(request,treinamento,f'{request.user.first_name}, você não tem permissão para editar evento')
+    if validar_permissoes:
+        return validar_permissoes
+    
     if request.method == 'POST':
         form = CriarEventoForm(request.POST, instance=treinamento)
 
@@ -152,6 +169,7 @@ def editar_treinamento(request,treinamento_id):
     
     return render(request, 'events/editar-treinamento.html', {'form': form, 'treinamento': treinamento})
 
+@login_required(login_url="login/")
 def remover_participante(request,treinamento_id,matricula_participante):
     treinamento = Treinamento.objects.get(id=treinamento_id)
     if matricula_participante in treinamento.participantes:
@@ -162,3 +180,10 @@ def remover_participante(request,treinamento_id,matricula_participante):
         messages.warning(request, f'Atenção: A matrícula {matricula_participante} não foi registrada neste evento!')
          
     return redirect('conferir-treinamento',treinamento_id=treinamento.id)
+
+def validar_permissoes_usuario(request,treinamento,mensagem_erro):
+    if request.user != treinamento.usuario_cadastrante:
+        messages.warning(request,mensagem_erro)
+        return redirect('conferir-treinamento',treinamento_id=treinamento.id)
+    else:
+        return None
