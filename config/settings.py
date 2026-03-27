@@ -32,6 +32,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['10.70.8.57', 'localhost', '127.0.0.1']
 
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -120,5 +122,10 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
-
 STATIC_URL = 'static/'
+
+# Pasta onde o Django vai juntar todo o CSS do Admin
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Ativa a compressão do WhiteNoise (deixa o carregamento super rápido)
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
