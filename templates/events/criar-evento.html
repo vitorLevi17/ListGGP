@@ -188,7 +188,17 @@
             formEvento.addEventListener('change', salvarRascunho);
 
             formEvento.addEventListener('submit', function() {
+                // 1. Limpa o rascunho
                 localStorage.removeItem('rascunho_evento');
+                
+                // 2. Encontra o botão de submit dentro do formulário
+                const btnSalvar = this.querySelector('button[type="submit"]');
+                
+                // 3. Desativa o botão instantaneamente para evitar duplo clique
+                btnSalvar.disabled = true;
+                
+                // 4. (Opcional) Troca o texto para dar um feedback visual de carregamento
+                btnSalvar.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Salvando...';
             });
 
             if(btnCancelar) {
