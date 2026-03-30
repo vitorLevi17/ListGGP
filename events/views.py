@@ -19,6 +19,15 @@ def conferir_treinamento(request,treinamento_id):
 @login_required(login_url='/login')
 def iniciar_treinamento(request,treinamento_id):
     treinamento = Treinamento.objects.get(id=treinamento_id)
+    
+    bloqueio = validar_permissoes_usuario(request,treinamento,f'{request.user.first_name}, você não tem permissão para iniciar o evento')
+    if bloqueio:
+        return bloqueio
+    
+    bloqueio_horario = validar_horario_inicio_treinamento(request,treinamento)
+    if bloqueio_horario:
+        return bloqueio_horario
+    
     treinamento.status = "ANDAMENTO"
     treinamento.save()
     return redirect('conferir-treinamento',treinamento_id=treinamento.id)
@@ -39,6 +48,11 @@ def adicionar_participante(request,treinamento_id,matricula_participante):
 @login_required(login_url='/login')
 def finalizar_treinamento(request,treinamento_id):
     treinamento = Treinamento.objects.get(id=treinamento_id)
+    
+    bloqueio = validar_permissoes_usuario(request,treinamento,f'{request.user.first_name}, você não tem permissão para finalizar o evento')
+    if bloqueio:
+        return bloqueio
+
     treinamento.status = "FINALIZADO"
     treinamento.save()
     messages.success(request,'Evento finalizado com sucesso!')
@@ -187,3 +201,10 @@ def validar_permissoes_usuario(request,treinamento,mensagem_erro):
         return redirect('conferir-treinamento',treinamento_id=treinamento.id)
     else:
         return None
+    
+def validar_horario_inicio_treinamento(request,treinamento):
+    limite_inicio = treinamento.data - timezone.timedelta(minutes=30)
+    if timezone.now() < limite_inicio:
+        messages.warning(request,f'Atenção: O treinamento só pode ser iniciado faltando 30 minutos para o horário marcado.')
+        return redirect('conferir-treinamento', treinamento_id=treinamento.id)
+    return None
