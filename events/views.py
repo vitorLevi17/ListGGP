@@ -5,6 +5,8 @@ from .models import Treinamento
 from django.contrib import messages
 from .forms import CriarEventoForm,CriarAulaForm
 from django.utils import timezone
+from datetime import datetime
+
 
 @login_required(login_url='/login')
 def listar_treinamentos_marcados(request):
@@ -20,9 +22,9 @@ def conferir_treinamento(request,treinamento_id):
 def iniciar_treinamento(request,treinamento_id):
     treinamento = Treinamento.objects.get(id=treinamento_id)
     
-    bloqueio = validar_permissoes_usuario(request,treinamento,f'{request.user.first_name}, você não tem permissão para iniciar o evento')
-    if bloqueio:
-        return bloqueio
+    bloqueio_permissoes = validar_permissoes_usuario(request,treinamento,f'{request.user.first_name}, você não tem permissão para iniciar o evento')
+    if bloqueio_permissoes:
+        return bloqueio_permissoes
     
     bloqueio_horario = validar_horario_inicio_treinamento(request,treinamento)
     if bloqueio_horario:
@@ -49,9 +51,13 @@ def adicionar_participante(request,treinamento_id,matricula_participante):
 def finalizar_treinamento(request,treinamento_id):
     treinamento = Treinamento.objects.get(id=treinamento_id)
     
-    bloqueio = validar_permissoes_usuario(request,treinamento,f'{request.user.first_name}, você não tem permissão para finalizar o evento')
-    if bloqueio:
-        return bloqueio
+    bloqueio_permissoes = validar_permissoes_usuario(request,treinamento,f'{request.user.first_name}, você não tem permissão para finalizar o evento')
+    if bloqueio_permissoes:
+        return bloqueio_permissoes
+    
+    bloqueio_horario = validar_horario_fim_treinamento(request,treinamento)
+    if bloqueio_horario:
+        return bloqueio_horario
 
     treinamento.status = "FINALIZADO"
     treinamento.save()
@@ -206,5 +212,15 @@ def validar_horario_inicio_treinamento(request,treinamento):
     limite_inicio = treinamento.data - timezone.timedelta(minutes=30)
     if timezone.now() < limite_inicio:
         messages.warning(request,f'Atenção: O treinamento só pode ser iniciado faltando 30 minutos para o horário marcado.')
+        return redirect('conferir-treinamento', treinamento_id=treinamento.id)
+    return None
+
+def validar_horario_fim_treinamento(request,treinamento):
+    data_treinamento = timezone.localtime(treinamento.data).date()
+    data_atual = datetime.combine(data_treinamento, treinamento.horario_final)
+    momento_termino = timezone.make_aware(data_atual)
+    
+    if timezone.now() < momento_termino:
+        messages.warning(request,f'Atenção: O treinamento só pode ser finalizado após o horário marcado.')
         return redirect('conferir-treinamento', treinamento_id=treinamento.id)
     return None
