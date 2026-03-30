@@ -202,7 +202,7 @@ def remover_participante(request,treinamento_id,matricula_participante):
     return redirect('conferir-treinamento',treinamento_id=treinamento.id)
 
 def validar_permissoes_usuario(request,treinamento,mensagem_erro):
-    if request.user != treinamento.usuario_cadastrante:
+    if request.user != treinamento.usuario_cadastrante and not request.user.groups.filter(name='RH GESTOR').exists():
         messages.warning(request,mensagem_erro)
         return redirect('conferir-treinamento',treinamento_id=treinamento.id)
     else:
