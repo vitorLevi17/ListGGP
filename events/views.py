@@ -98,6 +98,12 @@ def criar_evento(request):
         form = CriarEventoForm(request.POST)
 
         if form.is_valid():
+
+    
+            erro_horario = validar_horario_fim_treinamento_cadastro(request, form.instance)
+            if erro_horario:
+                return render(request, 'events/criar-evento.html', {'form': form})
+
             treinamento = form.save(commit=False)
             treinamento.status = 'MARCADO'
             treinamento.usuario_cadastrante = request.user
@@ -176,6 +182,9 @@ def editar_treinamento(request,treinamento_id):
         form = CriarEventoForm(request.POST, instance=treinamento)
 
         if form.is_valid():
+            bloqueio = validar_horario_fim_treinamento_cadastro(request, form.instance)
+            if bloqueio:
+                return render(request, 'events/criar-evento.html', {'form': form})
             form.save()
             messages.success(request, 'Treinamento atualizado com sucesso!')
             return redirect('conferir-treinamento', treinamento_id=treinamento.id)
@@ -224,3 +233,14 @@ def validar_horario_fim_treinamento(request,treinamento):
         messages.warning(request,f'Atenção: O treinamento só pode ser finalizado após o horário marcado.')
         return redirect('conferir-treinamento', treinamento_id=treinamento.id)
     return None
+
+def validar_horario_fim_treinamento_cadastro(request,treinamento):
+    data_inicio_treinamento = timezone.localtime(treinamento.data)
+    
+    horario_fim_sem_fuso = datetime.combine(data_inicio_treinamento.date(), treinamento.horario_final)
+    horario_fim_completo = timezone.make_aware(horario_fim_sem_fuso)
+    
+    if data_inicio_treinamento > horario_fim_completo or treinamento.data < timezone.now():
+        messages.warning(request,f'Atenção: As datas e horários de inicio e término estão inválidos.')
+        return True
+    return False   
