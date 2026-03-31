@@ -1,5 +1,8 @@
 from django import forms
 from .models import Treinamento,Aula
+from django.utils import timezone
+from datetime import datetime
+from django.db.models import Q
 
 class CriarEventoForm(forms.ModelForm):
     
@@ -17,7 +20,15 @@ class CriarEventoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['data'].required = True
-        self.fields['horario_final'].required = True    
+        self.fields['horario_final'].required = True
+
+        tempo_limite_busca = timezone.now() - timezone.timedelta(minutes=10)
+        if self.instance and self.instance.pk:
+            self.fields['aulas'].queryset = Aula.objects.filter(Q(data_criacao__gte=tempo_limite_busca) | Q(aulas=self.instance)).distinct()
+        else:
+            self.fields['aulas'].queryset = Aula.objects.filter(
+                data_criacao__gte=tempo_limite_busca
+            )
 
 class CriarAulaForm(forms.ModelForm):
     class Meta:

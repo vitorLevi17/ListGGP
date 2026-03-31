@@ -5,7 +5,10 @@ class ListAula(admin.ModelAdmin):
     list_display = ("nm_aula", 
     "descricao",
     "palestrante",
-    "carga_horaria")
+    "carga_horaria",
+    "data_criacao"
+    )
+    readonly_fields = ('data_criacao',)
 class ListTreinamento(admin.ModelAdmin):
     list_display = ("nm_evento",
                     "data",

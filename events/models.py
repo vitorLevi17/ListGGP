@@ -6,6 +6,7 @@ class Aula(models.Model):
     descricao = models.CharField(max_length=200)
     palestrante = models.CharField(max_length=100)
     carga_horaria = models.TimeField(null=False)
+    data_criacao = models.DateTimeField(auto_now_add=True,null=True,blank=True)
     
     def __str__(self):
         return self.nm_aula
