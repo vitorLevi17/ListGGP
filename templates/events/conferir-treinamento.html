@@ -112,7 +112,8 @@
                     {% for aula in treinamento.aulas.all %}
                         <li class="list-group-item bg-transparent">
                             <i class="bi bi-play-circle text-custom-teal me-2"></i> 
-                            <strong>{{ aula.nm_aula }}</strong> ({{ aula.carga_horaria }}h) <br>
+                            <strong>{{ aula.nm_aula }}</strong> ({{ aula.carga_horaria }}) <br>
+                            <small class="text-muted ms-4">De: {{ aula.horario_inicial_aula }} até {{ aula.horario_final_aula }}</small>
                             <small class="text-muted ms-4">Palestrante: {{ aula.palestrante }}</small>
                         </li>
                     {% empty %}

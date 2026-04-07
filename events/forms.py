@@ -33,11 +33,17 @@ class CriarEventoForm(forms.ModelForm):
 class CriarAulaForm(forms.ModelForm):
     class Meta:
         model = Aula
-        fields = ['nm_aula', 'descricao', 'palestrante', 'carga_horaria']
+        fields = ['nm_aula', 'descricao', 'palestrante', 'carga_horaria','horario_inicial_aula','horario_final_aula']
         
         widgets = {
             'nm_aula': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Segurança do Trabalho'}),
             'descricao': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Breve descrição do conteúdo'}),
             'palestrante': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nome do instrutor'}),
             'carga_horaria': forms.TimeInput(format='%H:%M',attrs={'type':'time','class': 'form-control','min':'00:05'}),
+            'horario_inicial_aula': forms.TimeInput(format='%H:%M',attrs={'type':'time','class': 'form-control','min':'00:01'}),
+            'horario_final_aula': forms.TimeInput(format='%H:%M',attrs={'type':'time','class': 'form-control','min':'00:01'}),
         }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['horario_inicial_aula'].required = True
+        self.fields['horario_final_aula'].required = True

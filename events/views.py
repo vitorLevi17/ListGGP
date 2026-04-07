@@ -78,7 +78,7 @@ def gerar_relatorio(request,treinamento_id):
     minutos_totais = 0
     for aula in treinamento.aulas.all():
         hora_formatada = aula.carga_horaria.strftime('%H:%M')
-        arquivo.write(f"Aula: "+aula.nm_aula+" | Descrição: "+aula.descricao+" | Ministrado por: "+aula.palestrante+" | Duração de: "+str(hora_formatada)+" horas \n")
+        arquivo.write(f"Aula: "+aula.nm_aula+" | Descrição: "+aula.descricao+" | Ministrado por: "+aula.palestrante+" | Duração de: "+str(hora_formatada)+" horas entre "+aula.horario_inicial_aula.strftime('%H:%M')+" e "+aula.horario_final_aula.strftime('%H:%M')+'\n')
         minutos_totais += (aula.carga_horaria.hour * 60) + aula.carga_horaria.minute
     
     horas_finais = minutos_totais // 60
