@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  django_app:
+    build: .
+    container_name: listggp_web
+    ports:
+      # Expõe a porta 443 (padrão HTTPS) do seu servidor apontando para a 8000 do contêiner
+      - "443:8000" 
+    volumes:
+      # Copia o código do seu Windows para dentro do Docker
+      - .:/app
+    command: gunicorn --bind 0.0.0.0:8000 --workers 3 --threads 2 --certfile=/app/cert.crt --keyfile=/app/cert.key config.wsgi:application
