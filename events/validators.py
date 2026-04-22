@@ -37,3 +37,11 @@ def validar_horario_fim_treinamento_cadastro(request,treinamento):
         messages.warning(request,f'Atenção: As datas e horários de inicio e término estão inválidos.')
         return True
     return False   
+
+def validar_horario_fim_aula(request,horario_inicio,horario_final):
+    if horario_inicio >= horario_final:
+        messages.warning(request,f'Atenção: As datas e horários de inicio e término estão inválidos.')
+        return True
+    return False
+
+    

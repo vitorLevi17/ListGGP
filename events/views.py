@@ -127,6 +127,13 @@ def criar_aula(request):
         form = CriarAulaForm(request.POST)
 
         if form.is_valid():
+            
+            horario_inicio = form.cleaned_data.get('horario_inicial_aula')
+            horario_final = form.cleaned_data.get('horario_final_aula')
+            bloqueio_horario = validar_horario_fim_aula(request,horario_inicio,horario_final)
+            if bloqueio_horario:
+                return render(request, 'events/criar-aula.html', {'form': form})
+            
             form.save()
             messages.success(request, 'Nova aula cadastrada com sucesso! Ela já está disponível para seleção.')
             
