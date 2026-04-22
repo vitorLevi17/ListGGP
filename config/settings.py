@@ -86,12 +86,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql', # O motor muda para PostgreSQL
-        'NAME': 'listggp_db',                      # O nome da sua base de dados
-        'USER': 'postgres',                    # O nome do utilizador
-        'PASSWORD': '123456789',    # A palavra-passe (senha)
-        'HOST': 'db',                              # O nome do serviço no Docker
-        'PORT': '5432',                            # A porta padrão do PostgreSQL
+        'ENGINE': 'django.db.backends.postgresql', 
+        'NAME': 'listggp_db',                      
+        'USER': 'postgres',                        
+        'PASSWORD': '123456789',                   
+        'HOST': 'db',   #PARA TESTES NA MÁQUINA, USAR LOCALHOST                              
+        'PORT': '5432',                            
     }
 }
 
