@@ -86,9 +86,9 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql', 
-        'NAME': 'listggp_db',                      
-        'USER': 'postgres',                        
-        'PASSWORD': '123456789',                   
+        'NAME': os.getenv('POSTGRES_DB'),                      
+        'USER': os.getenv('POSTGRES_USER'),                        
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),                   
         'HOST': 'db',   #PARA TESTES NA MÁQUINA, USAR LOCALHOST                              
         'PORT': '5432',                            
     }
