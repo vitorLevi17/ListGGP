@@ -8,7 +8,7 @@
 
         <div class="position-absolute start-50 translate-middle-x text-center text-dark fw-medium" style="line-height: 1.2;">
             {% if request.user.is_authenticated %}
-                <div class="fs-5">BEM VINDO,</div>
+                <div class="fs-5">Bem-vindo(a),</div>
                 <div class="fs-5">
                     {{ request.user.first_name|default:request.user.username|upper }}
                 </div>
