@@ -130,6 +130,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 STATIC_URL = 'static/'
 
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
 # Pasta onde o Django vai juntar todo o CSS do Admin
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 

@@ -1,3 +1,5 @@
+<!-- 1. Avisamos ao Django para carregar os arquivos estáticos no topo do arquivo -->
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -12,6 +14,9 @@
         
         <div class="card shadow-sm" style="width: 100%; max-width: 400px;">
             <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    <img src="{% static 'img/scba_logo.jpg' %}" alt="Logo SCMBA" class="img-fluid" style="max-height: 100px;">
+                </div>
                 <h3 class="card-title text-center mb-4">Acessar Conta</h3>
 
                 <form method="POST">
