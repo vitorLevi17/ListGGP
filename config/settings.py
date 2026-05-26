@@ -155,18 +155,17 @@ CSP_DEFAULT_SRC = ("'self'",)
 
 CSP_STYLE_SRC = (
     "'self'", 
-    "'unsafe-inline'", 
-    "https://cdn.jsdelivr.net",
-    "https://npmcdn.com"
+    "'unsafe-inline'"
 )
 
 CSP_SCRIPT_SRC = (
     "'self'", 
-    "'unsafe-inline'", 
-    "https://cdn.jsdelivr.net",
-    "https://unpkg.com"
+    "'unsafe-inline'"
 )
 
-CSP_FONT_SRC = ("'self'", "https://cdn.jsdelivr.net", "data:")
+CSP_FONT_SRC = ("'self'", "data:")
 CSP_IMG_SRC = ("'self'", "data:")
 CSP_FRAME_ANCESTORS = ("'none'",)
+
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = True
