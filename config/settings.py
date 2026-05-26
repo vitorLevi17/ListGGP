@@ -30,7 +30,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['10.70.8.57','localhost','127.0.0.1']
 CSRF_TRUSTED_ORIGINS = ['https://localhost',
                         'https://127.0.0.1',
                         'https://10.70.8.57']
@@ -51,8 +51,9 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'csp.middleware.CSPMiddleware', 
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -136,7 +137,6 @@ STATICFILES_DIRS = [
 # Pasta onde o Django vai juntar todo o CSS do Admin
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Ativa a compressão do WhiteNoise (deixa o carregamento super rápido)
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 SECURE_HSTS_SECONDS = 31536000
@@ -148,3 +148,25 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
 SECURE_SSL_REDIRECT = True
+
+WHITENOISE_ALLOW_ALL_ORIGINS = False
+
+CSP_DEFAULT_SRC = ("'self'",)
+
+CSP_STYLE_SRC = (
+    "'self'", 
+    "'unsafe-inline'", 
+    "https://cdn.jsdelivr.net",
+    "https://npmcdn.com"
+)
+
+CSP_SCRIPT_SRC = (
+    "'self'", 
+    "'unsafe-inline'", 
+    "https://cdn.jsdelivr.net",
+    "https://unpkg.com"
+)
+
+CSP_FONT_SRC = ("'self'", "https://cdn.jsdelivr.net", "data:")
+CSP_IMG_SRC = ("'self'", "data:")
+CSP_FRAME_ANCESTORS = ("'none'",)
