@@ -5,8 +5,8 @@ from .models import Treinamento
 from django.contrib import messages
 from .forms import CriarEventoForm,CriarAulaForm
 from django.utils import timezone
-from datetime import datetime
 from .validators import *
+from datetime import time as dt_time
 
 @login_required(login_url='/login')
 def listar_treinamentos_marcados(request):
@@ -161,21 +161,31 @@ def cancelar_treinamento(request,treinamento_id):
     return redirect('conferir-treinamento',treinamento_id=treinamento.id)
 
 @login_required(login_url="login/")
-def alterar_data_finalizacao(request,treinamento_id):
+def alterar_data_finalizacao(request, treinamento_id):
     if request.method == 'POST':
-        treinamento = Treinamento.objects.get(id = treinamento_id)
+        treinamento = Treinamento.objects.get(id=treinamento_id)
 
-        validar_permissoes = validar_permissoes_usuario(request,treinamento,f'{request.user.first_name}, você não tem permissão para alterar o horário de término do evento')
+        validar_permissoes = validar_permissoes_usuario(
+            request, treinamento, f'{request.user.first_name}, você não tem permissão para alterar o horário de término do evento'
+        )
         if validar_permissoes:
             return validar_permissoes 
-        
         novo_horario_final = request.POST.get('novo_horario')
 
         if novo_horario_final:
-            treinamento.horario_final = novo_horario_final
-            treinamento.save()
-    return redirect('conferir-treinamento',treinamento_id=treinamento.id)
-
+            horario_inicio = timezone.localtime(treinamento.data).time()
+            
+            hora, minuto = map(int, novo_horario_final.split(':')[:2])
+            novo_horario_obj = dt_time(hora, minuto)
+            
+            if novo_horario_obj < horario_inicio:
+                messages.warning(request, 'Atenção: O novo horário final de treinamento está inválido')
+            else:
+                treinamento.horario_final = novo_horario_final
+                treinamento.save()
+                messages.success(request, 'Horário final atualizado com sucesso!')
+                
+    return redirect('conferir-treinamento', treinamento_id=treinamento.id)
 @login_required(login_url="login/")
 def editar_treinamento(request,treinamento_id):
     treinamento = Treinamento.objects.get(id=treinamento_id)

@@ -129,85 +129,84 @@
 
             // 1. Flatpickr cuida da DATA e HORA de Início
             const calendarioInicio = flatpickr("#id_data", {
-                enableTime: true,           
-                time_24hr: true,            
-                dateFormat: "Y-m-d\\TH:i",  
-                locale: "pt",               
-                altInput: true,             
-                altFormat: "d/m/Y \\à\\s H:i", 
-                disableMobile: "true",
-                onChange: function() { salvarRascunho(); }
-            });
+        enableTime: true,           
+        time_24hr: true,            
+        dateFormat: "Y-m-d\\TH:i",  
+        locale: "pt",               
+        altInput: true,             
+        altFormat: "d/m/Y \\à\\s H:i", 
+        disableMobile: "true",
+        onChange: function() { salvarRascunho(); }
+    });
 
-            // 2. NOVO: Flatpickr cuida APENAS da HORA de Término
-            const calendarioFim = flatpickr("#id_horario_final", {
-                enableTime: true,
-                noCalendar: true,       // A MÁGICA AQUI: Esconde os dias, mostra só o relógio!
-                dateFormat: "H:i",      // Formato puro de hora que o Django exige
-                time_24hr: true,
-                altInput: true,
-                altFormat: "H:i",
-                disableMobile: "true",
-                onChange: function() { salvarRascunho(); }
-            });
-            
-            const formEvento = document.getElementById('form-criar-evento');
-            const btnCancelar = document.getElementById('btn-cancelar');
+    const calendarioFim = flatpickr("#id_horario_final", {
+        enableTime: true,
+        noCalendar: true,       
+        dateFormat: "H:i",      
+        time_24hr: true,
+        altInput: true,
+        altFormat: "H:i",
+        disableMobile: "true",
+        onChange: function() { salvarRascunho(); }
+    });
+    
+    const formEvento = document.getElementById('form-criar-evento');
+    const btnCancelar = document.getElementById('btn-cancelar');
 
-            const rascunho = JSON.parse(localStorage.getItem('rascunho_evento') || '{}');
-            
-            if (rascunho.nm_evento) document.getElementById('id_nm_evento').value = rascunho.nm_evento;
-            if (rascunho.local) document.getElementById('id_local').value = rascunho.local;
-            
-            // 3. Restaura as datas usando a função setDate() dos calendários
-            if (rascunho.data) {
-                calendarioInicio.setDate(rascunho.data);
-            }
-            if (rascunho.horario_final) {
-                calendarioFim.setDate(rascunho.horario_final);
-            }
-
-            if (rascunho.aulas) {
-                rascunho.aulas.forEach(val => {
-                    const cb = document.querySelector(`input[name="aulas"][value="${val}"]`);
-                    if (cb) cb.checked = true;
-                });
-            }
-
-            function salvarRascunho() {
-                const dados = {
-                    nm_evento: document.getElementById('id_nm_evento').value,
-                    data: document.getElementById('id_data').value,
-                    horario_final: document.getElementById('id_horario_final').value, // Salva o horário
-                    local: document.getElementById('id_local').value,
-                    aulas: Array.from(document.querySelectorAll('input[name="aulas"]:checked')).map(cb => cb.value)
-                };
-                localStorage.setItem('rascunho_evento', JSON.stringify(dados));
-            }
-
-            formEvento.addEventListener('input', salvarRascunho);
-            formEvento.addEventListener('change', salvarRascunho);
-
-            formEvento.addEventListener('submit', function() {
-                // 1. Limpa o rascunho
-                localStorage.removeItem('rascunho_evento');
-                
-                // 2. Encontra o botão de submit dentro do formulário
-                const btnSalvar = this.querySelector('button[type="submit"]');
-                
-                // 3. Desativa o botão instantaneamente para evitar duplo clique
-                btnSalvar.disabled = true;
-                
-                // 4. (Opcional) Troca o texto para dar um feedback visual de carregamento
-                btnSalvar.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Salvando...';
-            });
-
-            if(btnCancelar) {
-                btnCancelar.addEventListener('click', function() {
-                    localStorage.removeItem('rascunho_evento');
-                });
-            }
+    // 2. Recupera os dados salvos do localStorage
+    const rascunho = JSON.parse(localStorage.getItem('rascunho_evento') || '{}');
+    
+    // 3. PASSO CRUCIAL: Restaura primeiro os campos comuns de texto
+    if (rascunho.nm_evento) document.getElementById('id_nm_evento').value = rascunho.nm_evento;
+    if (rascunho.local) document.getElementById('id_local').value = rascunho.local;
+    
+    // 4. PASSO CRUCIAL: Restaura as caixas de seleção ANTES de mexer nos calendários
+    if (rascunho.aulas) {
+        rascunho.aulas.forEach(val => {
+            const cb = document.querySelector(`input[name="aulas"][value="${val}"]`);
+            if (cb) cb.checked = true;
         });
+    }
+
+    // 5. Restaura as datas por último, passando 'false' como segundo parâmetro
+    // Isso impede que o Flatpickr dispare a função onChange durante o carregamento inicial
+    if (rascunho.data) {
+        calendarioInicio.setDate(rascunho.data, false);
+    }
+    if (rascunho.horario_final) {
+        calendarioFim.setDate(rascunho.horario_final, false);
+    }
+
+    // 6. Função para capturar o estado atual e salvar
+    function salvarRascunho() {
+        const dados = {
+            nm_evento: document.getElementById('id_nm_evento').value,
+            data: document.getElementById('id_data').value,
+            horario_final: document.getElementById('id_horario_final').value, 
+            local: document.getElementById('id_local').value,
+            aulas: Array.from(document.querySelectorAll('input[name="aulas"]:checked')).map(cb => cb.value)
+        };
+        localStorage.setItem('rascunho_evento', JSON.stringify(dados));
+    }
+
+    // 7. Ativa os ouvintes de eventos apenas após toda a restauração estar concluída
+    formEvento.addEventListener('input', salvarRascunho);
+    formEvento.addEventListener('change', salvarRascunho);
+
+    // Limpeza de fluxos de envio e cancelamento
+    formEvento.addEventListener('submit', function() {
+        localStorage.removeItem('rascunho_evento');
+        const btnSalvar = this.querySelector('button[type="submit"]');
+        btnSalvar.disabled = true;
+        btnSalvar.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Salvando...';
+    });
+
+    if(btnCancelar) {
+        btnCancelar.addEventListener('click', function() {
+            localStorage.removeItem('rascunho_evento');
+        });
+    }
+});
     </script>
 </body>
 </html>
