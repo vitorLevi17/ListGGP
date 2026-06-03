@@ -6,15 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alterar Senha - ListGGP</title>
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    
+    <style nonce="{{ request.csp_nonce }}">
+        .auth-card { width: 100%; max-width: 400px; }
+        .auth-logo { max-height: 100px; }
+    </style>
 </head>
 <body class="bg-light">
 
     <div class="container d-flex justify-content-center align-items-center vh-100">
         
-        <div class="card shadow-sm" style="width: 100%; max-width: 400px;">
+        <div class="card shadow-sm auth-card">
             <div class="card-body p-4">
                 <div class="text-center mb-4">
-                    <img src="{% static 'img/scba_logo.jpg' %}" alt="Logo SCMBA" class="img-fluid" style="max-height: 100px;">
+                    <img src="{% static 'img/scba_logo.jpg' %}" alt="Logo SCMBA" class="img-fluid auth-logo">
                 </div>
                 <h3 class="card-title text-center mb-4">Alterar Senha</h3>
 
@@ -54,6 +59,6 @@
         </div>
     </div>
 
-    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
 </body>
 </html>

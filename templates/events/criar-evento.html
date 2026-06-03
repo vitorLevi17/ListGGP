@@ -12,7 +12,7 @@
     <link href="{% static 'css/flatpickr.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/airbnb.css' %}" rel="stylesheet">
     
-    <style>
+    <style nonce="{{ request.csp_nonce }}">
         .bg-custom-teal { background-color: #00a2b9; }
         .text-custom-teal { color: #00a2b9; }
     </style>
@@ -120,11 +120,11 @@
         </div>
     </div>
 
-    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'js/flatpickr.js' %}"></script>
-    <script src="{% static 'js/pt.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+    <script src="{% static 'js/flatpickr.js' %}" nonce="{{ request.csp_nonce }}"></script>
+    <script src="{% static 'js/pt.js' %}" nonce="{{ request.csp_nonce }}"></script>
 
-    <script>
+    <script nonce="{{ request.csp_nonce }}">
         document.addEventListener("DOMContentLoaded", function() {
 
             // 1. Flatpickr cuida da DATA e HORA de Início

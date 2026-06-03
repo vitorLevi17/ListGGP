@@ -9,7 +9,7 @@
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/bootstrap-icons.css' %}" rel="stylesheet">
     
-    <style>
+    <style nonce="{{ request.csp_nonce }}">
         .bg-custom-teal { background-color: #00a2b9; }
         .text-custom-teal { color: #00a2b9; }
         
@@ -228,6 +228,7 @@
             </div>
         </div>
     </div>
+
     <div class="modal fade" id="removerParticipanteModal" tabindex="-1" aria-labelledby="removerParticipanteModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow">
@@ -242,64 +243,97 @@
                 </div>
                 <div class="modal-footer justify-content-end border-0 pb-4">
                     <button type="button" class="btn btn-outline-secondary px-4 fw-bold" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-danger px-4 fw-bold shadow-sm" onclick="removerManual()">Remover</button>
+                    <button type="button" class="btn btn-danger px-4 fw-bold shadow-sm" id="btnConfirmarRemover">Remover</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'js/html5-qrcode.js' %}"></script>
+    <div class="modal fade" id="manualModal" tabindex="-1" aria-labelledby="manualModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title fw-bold" id="manualModalLabel"><i class="bi bi-keyboard me-2"></i>Inserir Matrícula Manualmente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4 fs-5 text-start">
+                    <label for="matriculaInput" class="form-label fw-bold">Digite a matrícula:</label>
+                    <input type="number" id="matriculaInput" class="form-control form-control-lg shadow-sm" placeholder="Ex: 890" min="1">
+                </div>
+                <div class="modal-footer justify-content-end border-0 pb-4">
+                    <button type="button" class="btn btn-outline-secondary px-4 fw-bold" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-warning px-4 fw-bold shadow-sm" id="btnConfirmarAdicionar">Adicionar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+    <script src="{% static 'js/html5-qrcode.js' %}" nonce="{{ request.csp_nonce }}"></script>
+
+    <script nonce="{{ request.csp_nonce }}">
         document.addEventListener("DOMContentLoaded", function() {
             const qrModal = document.getElementById('qrModal');
             let html5QrCode;
 
-            qrModal.addEventListener('shown.bs.modal', function () {
-                //html5QrCode = new Html5Qrcode("reader");
-                // Força a biblioteca a ignorar códigos de barras e focar 100% apenas em QR Codes 2D
-                html5QrCode = new Html5Qrcode("reader", {
-                    formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE ]
-                });
-                
-                Html5Qrcode.getCameras().then(cameras => {
-                    if (cameras && cameras.length > 0) {
-                        let cameraId = cameras[cameras.length - 1].id; 
-                        
-                        html5QrCode.start(
-                            cameraId, 
-                            { fps: 10, qrbox: { width: 250, height: 250 } },
-                            (decodedText) => {
-                                html5QrCode.stop().then(() => {
-                                    bootstrap.Modal.getInstance(qrModal).hide();
-                                    
-                                    let urlDjango = "{% url 'adicionar-participante' treinamento.id 'MATRICULA' %}";
-                                    urlDjango = urlDjango.replace('MATRICULA', encodeURIComponent(decodedText));
-                                    window.location.href = urlDjango;
-                                });
-                            },
-                            (errorMessage) => { 
-                            }
-                        ).catch((err) => {
-                            alert("Erro ao iniciar o vídeo da câmera: " + err);
-                        });
-                    } else {
-                        alert("Nenhuma câmera foi detectada no seu dispositivo.");
-                    }
-                }).catch(err => {
-                    alert("Acesso à câmera negado! Verifique as permissões do navegador ou a regra do HTTPS. Detalhe técnico: " + err);
-                });
-            });
+            // Lógica do botão Remover Manualmente
+            const btnRemover = document.getElementById('btnConfirmarRemover');
+            if(btnRemover) {
+                btnRemover.addEventListener('click', removerManual);
+            }
 
-            qrModal.addEventListener('hidden.bs.modal', function () {
-                if (html5QrCode) {
-                    html5QrCode.stop().then(() => {
-                        html5QrCode.clear();
-                    }).catch(err => console.error("Erro ao limpar câmera", err));
-                }
-            });
+            // Lógica do botão Adicionar Manualmente
+            const btnAdicionar = document.getElementById('btnConfirmarAdicionar');
+            if(btnAdicionar) {
+                btnAdicionar.addEventListener('click', adicionarManual);
+            }
+
+            if(qrModal) {
+                qrModal.addEventListener('shown.bs.modal', function () {
+                    // Força a biblioteca a ignorar códigos de barras e focar 100% apenas em QR Codes 2D
+                    html5QrCode = new Html5Qrcode("reader", {
+                        formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE ]
+                    });
+                    
+                    Html5Qrcode.getCameras().then(cameras => {
+                        if (cameras && cameras.length > 0) {
+                            let cameraId = cameras[cameras.length - 1].id; 
+                            
+                            html5QrCode.start(
+                                cameraId, 
+                                { fps: 10, qrbox: { width: 250, height: 250 } },
+                                (decodedText) => {
+                                    html5QrCode.stop().then(() => {
+                                        bootstrap.Modal.getInstance(qrModal).hide();
+                                        
+                                        let urlDjango = "{% url 'adicionar-participante' treinamento.id 'MATRICULA' %}";
+                                        urlDjango = urlDjango.replace('MATRICULA', encodeURIComponent(decodedText));
+                                        window.location.href = urlDjango;
+                                    });
+                                },
+                                (errorMessage) => { 
+                                }
+                            ).catch((err) => {
+                                alert("Erro ao iniciar o vídeo da câmera: " + err);
+                            });
+                        } else {
+                            alert("Nenhuma câmera foi detectada no seu dispositivo.");
+                        }
+                    }).catch(err => {
+                        alert("Acesso à câmera negado! Verifique as permissões do navegador ou a regra do HTTPS. Detalhe técnico: " + err);
+                    });
+                });
+
+                qrModal.addEventListener('hidden.bs.modal', function () {
+                    if (html5QrCode) {
+                        html5QrCode.stop().then(() => {
+                            html5QrCode.clear();
+                        }).catch(err => console.error("Erro ao limpar câmera", err));
+                    }
+                });
+            }
         });
+
         // FUNÇÃO PARA ADICIONAR PARTICIPANTE MANUALMENTE
         function adicionarManual() {
             // Pega o valor digitado e remove espaços
@@ -322,6 +356,7 @@
                 document.getElementById('matriculaInput').value = "";
             }
         }
+
         // FUNÇÃO PARA REMOVER PARTICIPANTE MANUALMENTE
         function removerManual() {
             // Pega o valor digitado e remove espaços
@@ -330,7 +365,7 @@
             // Verifica se o campo não está vazio e se o número é maior que zero
             if (matricula && Number(matricula) > 0) {
                 
-                // Prepara a URL (Certifique-se de que o nome da URL no urls.py é 'remover-participante')
+                // Prepara a URL
                 let urlDjango = "{% url 'remover-participante' treinamento.id 'MATRICULA' %}";
                 urlDjango = urlDjango.replace('MATRICULA', encodeURIComponent(matricula));
                 
@@ -343,23 +378,5 @@
             }
         }
     </script>
-    <div class="modal fade" id="manualModal" tabindex="-1" aria-labelledby="manualModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow">
-                <div class="modal-header bg-warning text-dark">
-                    <h5 class="modal-title fw-bold" id="manualModalLabel"><i class="bi bi-keyboard me-2"></i>Inserir Matrícula Manualmente</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-4 fs-5 text-start">
-                    <label for="matriculaInput" class="form-label fw-bold">Digite a matrícula:</label>
-                    <input type="number" id="matriculaInput" class="form-control form-control-lg shadow-sm" placeholder="Ex: 890" min="1">
-                </div>
-                <div class="modal-footer justify-content-end border-0 pb-4">
-                    <button type="button" class="btn btn-outline-secondary px-4 fw-bold" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-warning px-4 fw-bold shadow-sm" onclick="adicionarManual()">Adicionar</button>
-                </div>
-            </div>
-        </div>
-    </div>
 </body>
 </html>

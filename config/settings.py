@@ -154,18 +154,17 @@ WHITENOISE_ALLOW_ALL_ORIGINS = False
 CSP_DEFAULT_SRC = ("'self'",)
 
 CSP_STYLE_SRC = (
-    "'self'", 
-    "'unsafe-inline'"
+    "'self'",
 )
 
 CSP_SCRIPT_SRC = (
     "'self'", 
-    "'unsafe-inline'"
 )
 
 CSP_FONT_SRC = ("'self'", "data:")
 CSP_IMG_SRC = ("'self'", "data:")
 CSP_FRAME_ANCESTORS = ("'none'",)
+CSP_INCLUDE_NONCE_IN = ['script-src', 'style-src']
 
 SESSION_COOKIE_HTTPONLY = True
 CSRF_COOKIE_HTTPONLY = True

@@ -9,17 +9,19 @@
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/bootstrap-icons.css' %}" rel="stylesheet">
 
-    <style>
+    <style nonce="{{ request.csp_nonce }}">
         .bg-custom-teal { background-color: #00a2b9; }
         .btn-custom { background-color: #00a2b9; color: #000; border: none; font-weight: 500; transition: all 0.3s ease; }
         .btn-custom:hover { background-color: #00879a; color: #000; transform: translateY(-2px); }
+        
+        .main-container-height { min-height: calc(100vh - 90px); }
     </style>
 </head>
 <body>
 
     {% include 'partials/navbar.html' %}
 
-    <div class="container d-flex justify-content-center align-items-center" style="min-height: calc(100vh - 90px);">
+    <div class="container d-flex justify-content-center align-items-center main-container-height">
         <div class="d-flex flex-wrap gap-4 justify-content-center">
             {% csrf_token %}
             <a href="{% url 'criar-evento' %}" class="btn btn-custom rounded-pill px-4 py-3 fs-5 d-flex align-items-center gap-2 shadow-sm">
@@ -37,6 +39,6 @@
         </div>
     </div>
 
-    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
 </body>
 </html>

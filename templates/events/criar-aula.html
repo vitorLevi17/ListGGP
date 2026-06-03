@@ -7,7 +7,8 @@
     <title>Cadastrar Aula - ListGGP</title>
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/bootstrap-icons.css' %}" rel="stylesheet">    
-    <style>
+    
+    <style nonce="{{ request.csp_nonce }}">
         .bg-custom-teal { background-color: #00a2b9; }
         .text-custom-teal { color: #00a2b9; }
     </style>
@@ -28,7 +29,8 @@
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
             <h2 class="m-0"><i class="bi bi-journal-plus text-custom-teal me-2"></i>Nova Aula</h2>
-            <a href="javascript:history.back()" class="btn btn-outline-secondary btn-sm">
+            
+            <a href="#" id="btn-voltar" class="btn btn-outline-secondary btn-sm">
                 <i class="bi bi-arrow-left"></i> Voltar
             </a>
         </div>
@@ -85,5 +87,17 @@
             </div>
         </div>
     </div>
+
+    <script nonce="{{ request.csp_nonce }}">
+        document.addEventListener("DOMContentLoaded", function() {
+            const btnVoltar = document.getElementById('btn-voltar');
+            if (btnVoltar) {
+                btnVoltar.addEventListener('click', function(e) {
+                    e.preventDefault(); // Evita que a página role para o topo (padrão do href="#")
+                    history.back();     // Volta a página
+                });
+            }
+        });
+    </script>
 </body>
 </html>
