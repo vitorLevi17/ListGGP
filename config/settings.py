@@ -161,8 +161,8 @@ CSP_SCRIPT_SRC = (
     "'self'", 
 )
 
-CSP_FONT_SRC = ("'self'", "data:")
-CSP_IMG_SRC = ("'self'", "data:")
+CSP_FONT_SRC = ("'self'",)
+CSP_IMG_SRC = ("'self'",)
 CSP_FRAME_ANCESTORS = ("'none'",)
 CSP_INCLUDE_NONCE_IN = ['script-src', 'style-src']
 
