@@ -6,9 +6,11 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 
 def login_view(request):
-    #CORREÇÃO DO 403 VERIFICAÇÃO CSRF
     if request.user.is_authenticated:
-        return redirect('index')
+        if request.user.groups.filter(name__in=['RH', 'RH GESTOR']).exists():
+            return redirect('index')
+        else:
+            return redirect('pagina-inicial')
     
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -24,8 +26,11 @@ def login_view(request):
                     auth.login(request, user)
                     if primeiro_acesso:
                         return redirect('usuario_altera_senha')
-                    else:
+                    elif user.groups.filter(name__in=['RH','RH GESTOR']).exists():
                         return redirect('index')
+                        
+                    else:
+                        return redirect('pagina-inicial')
                 else:
                     form.add_error(None, 'Usuário ou senha incorretos.') 
             else:
@@ -57,7 +62,10 @@ def usuario_altera_senha(request):
                 user.set_password(confirmacao_senha)
                 user.save()
                 update_session_auth_hash(request, user)
-                return redirect('index')
+                if user.groups.filter(name__in=['RH','RH GESTOR']).exists():
+                    return redirect('index')
+                else:
+                    return redirect('pagina-inicial')
             else:
                 form.add_error(None, 'As senhas não coincidem.')
     else:
