@@ -17,6 +17,7 @@ class Treinamento(models.Model):
 
     opcoes_local = [
         ("CARAVANA - UNIDADES SANTA CASA IN LOCO", "CARAVANA - UNIDADES SANTA CASA IN LOCO"),
+        ("IN LOCO","IN LOCO"),
         ("PUPILEIRA - SALÃO RAINHA LEONOR", "PUPILEIRA - SALÃO RAINHA LEONOR"),
         ("PUPILEIRA - SALÃO M", "PUPILEIRA - SALÃO M"),
         ("CASA AZUL GGP - SALA", "CASA AZUL GGP - SALA"),
