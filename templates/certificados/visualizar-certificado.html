@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Certificado</title>
+</head>
+<body>
+    
+    <h1>Detalhes do Certificado: {{ certificado.nm_certificado }}</h1>
+
+    <div style="border: 1px solid #ccc; padding: 20px; max-width: 600px;">
+        <p><strong>Carga Horária:</strong> {{ certificado.carga_horaria }}</p>
+        <p><strong>Palestrante:</strong> {{ certificado.palestrante }}</p>
+        <p><strong>Empresa:</strong> {{ certificado.empresa }}</p>
+        <p><strong>Descrição:</strong> {{ certificado.descricao }}</p>
+        <p><strong>Status:</strong> {{ certificado.status }}</p>
+
+        <hr>
+
+        <h3>Link do Certificado:</h3>
+        {% if certificado.url %}
+            <a href="{{ certificado.url }}" target="_blank" style="padding: 10px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Acessar Certificado Original</a>
+        {% else %}
+            <p><em>Este certificado não possui link externo anexado.</em></p>
+        {% endif %}
+    </div>
+
+    <br>
+    <a href="{% url 'listar-certificados-usuario' %}">← Voltar para Meus Certificados</a>
+
+</body>
+</html>

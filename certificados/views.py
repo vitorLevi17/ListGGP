@@ -31,5 +31,9 @@ def cadastrar_certificado(request):
 @login_required (login_url='/login')
 def listar_certificados_usuario(request):
     id_usuario = request.user
-    lista_certificados = Certificado.objects.filter(id_usuario=id_usuario,status='AGUARDANDO ANÁLISE')
+    lista_certificados = Certificado.objects.filter(id_usuario=id_usuario,status__in=['AGUARDANDO ANÁLISE','APROVADO','REPROVADO'])
     return render(request,'certificados/listar-certificados-usuario.html',{'certificados':lista_certificados})
+
+def visualizar_certificado(request,certificado_id):
+    certificado = Certificado.objects.get(id=certificado_id)
+    return render(request,'certificados/visualizar-certificado.html',{'certificado':certificado})
