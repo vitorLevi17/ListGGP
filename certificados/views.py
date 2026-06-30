@@ -2,11 +2,13 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from .forms import CriarCertificadoForm
 from django.contrib import messages
+from .models import Certificado
 
 @login_required (login_url='/login')
 def pagina_inicial(request):
     return render(request,'pagina-inicial.html')
 
+@login_required (login_url='/login')
 def cadastrar_certificado(request):
     if request.method == 'POST':
         form = CriarCertificadoForm(request.POST)
@@ -25,3 +27,9 @@ def cadastrar_certificado(request):
     
         form = CriarCertificadoForm()
     return render(request, 'certificados/cadastrar-certificado.html', {'form': form})
+
+@login_required (login_url='/login')
+def listar_certificados_usuario(request):
+    id_usuario = request.user
+    lista_certificados = Certificado.objects.filter(id_usuario=id_usuario,status='AGUARDANDO ANÁLISE')
+    return render(request,'certificados/listar-certificados-usuario.html',{'certificados':lista_certificados})

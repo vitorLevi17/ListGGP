@@ -6,7 +6,8 @@ class Certificado(models.Model):
     opcoes_status = [
         ("APROVADO","aprovado"),
         ("REPROVADO","reprovado"),
-        ("AGUARDANDO ANÁLISE","aguardando análise")
+        ("AGUARDANDO ANÁLISE","aguardando análise"),
+        ("CANCELADO","cancelado")
     ]
 
     nm_certificado = models.CharField(max_length=150)

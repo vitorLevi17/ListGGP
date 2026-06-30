@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Meus Certificados</title>
+</head>
+<body>
+
+    <h1>Meus Certificados</h1>
+
+    {% if certificados %}
+        <table border="1" cellpadding="10" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Nome do Certificado</th>
+                    <th>Carga Horária</th>
+                    <th>Palestrante</th>
+                    <th>Empresa</th>
+                    <th>Descrição</th>
+                    <th>Status</th>
+                    <th>Link</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for certificado in certificados %}
+                    <tr>
+                        <td>{{ certificado.nm_certificado }}</td>
+                        <td>{{ certificado.carga_horaria }}</td>
+                        <td>{{ certificado.palestrante }}</td>
+                        <td>{{ certificado.empresa }}</td>
+                        <td>{{ certificado.descricao }}</td>
+                        <td>{{ certificado.status }}</td>
+                        <td>
+                            {% if certificado.url %}
+                                <a href="{{ certificado.url }}" target="_blank">Visualizar</a>
+                            {% else %}
+                                Sem link
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Você não possui certificados listados no momento.</p>
+    {% endif %}
+
+</body>
+</html>
